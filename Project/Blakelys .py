@@ -5,7 +5,7 @@ def ModMul(A, B, n):
     # Convert B to a binary list
     B = [1 if digit=='1' else 0 for digit in bin(B)[2:]]
     for bi in B:
-        R = (R << 12)
+        R = (R << 1)
         if (bi): # bi is either 1 or 0
             R += A
         if R >= n:
