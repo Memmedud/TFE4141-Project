@@ -10,15 +10,13 @@
 --                public domain (UNLICENSE)
 --------------------------------------------------------------------------------
 -- Purpose:
---   RSA encryption core template. This core currently computes
---   C = M xor key_n
---
---   Replace/change this module so that it implements the function
+--   RSA encryption core, it implements the function
 --   C = M**key_e mod key_n.
 --------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
 entity rsa_core is
 	generic (
 		-- Users to add parameters here
@@ -67,6 +65,9 @@ end rsa_core;
 
 architecture rtl of rsa_core is
 
+signal nega_n       : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+signal nega_2n       : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+
 begin
 	i_exponentiation : entity work.exponentiation
 		generic map (
@@ -80,11 +81,15 @@ begin
 			ready_out => msgout_ready,
 			valid_out => msgout_valid,
 			result    => msgout_data ,
-			modulus   => key_n       ,
+			nega_n    => nega_n      ,
+			nega_2n   => nega_2n     ,
 			clk       => clk         ,
 			reset_n   => reset_n
 		);
 
-	msgout_last  <= msgin_last;
+	msgout_last  <= '0';
 	rsa_status   <= (others => '0');
+	nega_n <= (others => '0');--std_logic_vector(-signed(key_n));
+	nega_2n <= std_logic_vector(-signed(shift_left(unsigned(key_n), 1)));
+	
 end rtl;

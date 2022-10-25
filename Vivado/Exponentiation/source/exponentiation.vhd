@@ -8,26 +8,24 @@ entity exponentiation is
 		C_block_size : integer := 256
 	);
 	port (
-		--input control
+		-- input control
 		valid_in	: in STD_LOGIC;
 		ready_in	: out STD_LOGIC;
 
-		--input data
-		message 	: in STD_LOGIC_VECTOR ( C_block_size-1 downto 0 );
-		key 		: in STD_LOGIC_VECTOR ( C_block_size-1 downto 0 );
-
-		--ouput control
-		ready_out	: in STD_LOGIC;
-		valid_out	: out STD_LOGIC;
-
-		--output data
-		result 		: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-
-		--modulus
+		-- input data
+		message 	: in STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+		key 		: in STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 		nega_n    	: in STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 		nega_2n 	: in STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
-		--utility
+		-- ouput control
+		ready_out	: in STD_LOGIC;
+		valid_out	: out STD_LOGIC;
+
+		-- output data
+		result 		: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+
+		-- utility
 		clk 		: in STD_LOGIC;
 		reset_n 	: in STD_LOGIC
 	);
@@ -48,30 +46,13 @@ signal store_M      : std_logic;
 signal store_P      : std_logic;
 
 -- Blakely signals
-signal result_C        : std_logic_vector(C_block_size-1 downto 0);
-signal result_P        : std_logic_vector(C_block_size-1 downto 0);
+signal result_C     : std_logic_vector(C_block_size-1 downto 0);
+signal result_P     : std_logic_vector(C_block_size-1 downto 0);
 
 -- FSM signals
-signal index        : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
+signal index        : std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
 
-begin
-    
-    -- Instansiate PISO register
-	/*in_PISO : entity work.PISO
-	   generic map (
-	       width => C_block_size
-	   )
-	   port map (
-	       -- Inputs
-	       clk => clk,
-	       rst => reset_n,
-	       store => store_M,
-	       me_in => message,
-	       
-	       -- Outputs
-	       data_out => bi
-	   );*/
-	   
+begin   
 	-- Instansiate Two Blakely modules
 	in_blakely_C : entity work.blakely
 	   generic map (
@@ -119,8 +100,10 @@ begin
 			rst_n => reset_n,
             -- Outputs
 			valid_out => valid_out,
-			ready_in => ready_in
+			ready_in => ready_in,
+			index => index
         );
+    
     
     -- Sequential datapath
     process(clk, reset_n)
@@ -130,21 +113,21 @@ begin
 			P_r <= (others => '0');
         elsif (rising_edge(clk)) then
             C_r <= C_nxt;
-
+            P_r <= P_nxt;
         end if;
     end process;
     
     -- Combinatorial datapath
-    process(index)
+    process(index, key, result_C, C_r)
     begin
-        if (key(to_integer(index)) = '1') then
+        if (key(to_integer(unsigned(index))) = '1') then
             C_nxt <= result_C;
         else 
             C_nxt <= C_r;
         end if;
     end process;
    
-   bi <= P_r(to_integer(index));
+   bi <= P_r(to_integer(unsigned(index)));
    P_nxt <= result_P;
    result <= C_r;
    
