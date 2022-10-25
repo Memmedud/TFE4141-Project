@@ -35,7 +35,7 @@ entity rsa_core is
 		-- Slave msgin interface
 		-----------------------------------------------------------------------------
 		-- Message that will be sent out is valid
-		msgin_valid             : in std_logic;
+		msgin_valid             :  in std_logic;
 		-- Slave ready to accept a new message
 		msgin_ready             : out std_logic;
 		-- Message that will be sent out of the rsa_msgin module
