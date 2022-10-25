@@ -23,6 +23,7 @@ architecture rtl of blakely is
 
 signal result_nxt       : STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
 signal result_bitshift  : STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
+signal result_r         : STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
 
 signal sum_a            : STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
 signal mux_bi           : STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
@@ -37,17 +38,17 @@ begin
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
-            result <= (others => '0');
+            result_r <= (others => '0');
         elsif (rising_edge(clk)) then
-            result <= result_next;
+            result_r <= result_nxt;
         end if;
     end process;
 
     -- Combinatorial datapath
-    process(a, bi, nega_n, nega_2n, result, result_nxt, result_bitshift, sum_a, mux_bi, sum_n, sum_2n, overflow1, overflow2)
+    process(a, bi, nega_n, nega_2n, result_r, result_nxt, result_bitshift, sum_a, mux_bi, sum_n, sum_2n, overflow1, overflow2)
     begin
-        result_bitshift <= shift_left(result, 1);
-        sum_a <= result_bitshift + a;
+        result_bitshift <= STD_LOGIC_VECTOR(shift_left(unsigned(result_r), 1));
+        sum_a <= STD_LOGIC_VECTOR(signed(result_bitshift) + signed(a));
         if(bi = '1') then
             mux_bi <= sum_a;
         else
@@ -70,4 +71,7 @@ begin
 
 
     end process;
+    
+    result <= result_r;
+    
 end rtl;
