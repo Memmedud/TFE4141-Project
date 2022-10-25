@@ -1,3 +1,9 @@
 Hva må gjøres: 
-    Vi må til Vennesla og kjøpe løvsteik 
-    Og en jyyyyysla svær cola
+    FSM pseudokode. Skal den være en egen modul, eller integrert i annen kode? 
+
+    Må verifisere modmul, vurdere å lage testbenk
+
+    Design testbenk til hele systemet 
+
+    
+
