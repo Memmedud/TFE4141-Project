@@ -7,6 +7,7 @@ entity blakely is
         C_block_size : integer := 256
     );
     port (
+        -- Inputs
         clk         :  in STD_LOGIC;
         rst_n       :  in STD_LOGIC;
 
@@ -15,6 +16,7 @@ entity blakely is
         nega_n      :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
         nega_2n     :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
 
+        -- Outputs
         result      : out STD_LOGIC_VECTOR(C_block_size - 1 downto 0)
     );
 end blakely;
@@ -49,11 +51,13 @@ begin
     begin
         result_bitshift <= STD_LOGIC_VECTOR(shift_left(unsigned(result_r), 1));
         sum_a <= STD_LOGIC_VECTOR(signed(result_bitshift) + signed(a));
+        
         if(bi = '1') then
             mux_bi <= sum_a;
         else
             mux_bi <= result_bitshift;
         end if;
+
         sum_n   <= STD_LOGIC_VECTOR(signed(nega_n) + signed(mux_bi));
         sum_2n  <= STD_LOGIC_VECTOR(signed(nega_2n) + signed(mux_bi));
         overflow1 <= sum_n(C_block_size);
@@ -68,7 +72,6 @@ begin
         else
             result_nxt <= (others => '0');
         end if;
-
 
     end process;
     

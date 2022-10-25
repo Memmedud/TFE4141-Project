@@ -33,7 +33,8 @@ begin
 			ready_out => ready_out,
 			valid_out => valid_out,
 			result    => result   ,
-			modulus   => modulus  ,
+			nega_n    => modulus  ,
+			nega_2n   => modulus  ,
 			clk       => clk      ,
 			reset_n   => reset_n
 		);
