@@ -6,7 +6,7 @@ entity exponentiation is
 		C_block_size : integer := 256
 	);
 	port (
-		--input controll
+		--input control
 		valid_in	: in STD_LOGIC;
 		ready_in	: out STD_LOGIC;
 
@@ -14,7 +14,7 @@ entity exponentiation is
 		message 	: in STD_LOGIC_VECTOR ( C_block_size-1 downto 0 );
 		key 		: in STD_LOGIC_VECTOR ( C_block_size-1 downto 0 );
 
-		--ouput controll
+		--ouput control
 		ready_out	: in STD_LOGIC;
 		valid_out	: out STD_LOGIC;
 
@@ -32,11 +32,33 @@ end exponentiation;
 
 
 architecture expBehave of exponentiation is
-begin
-	result <= message xor modulus;
-	ready_in <= ready_out;
-	valid_out <= valid_in;
 
+signal bi           : STD_LOGIC;
+
+begin
+    
+    -- Instansiate PISO register
+	in_PISO : entity work.PISO
+	   generic map (
+	       width => C_block_size
+	   )
+	   port map (
+	       clk => clk,
+	       rst => reset_n,
+	       store => '1',
+	       data_in => message,
+	       
+	       data_out => bi
+	   );
+	   
+	-- Instansiate Two Blakely modules
+	in_blakely : entity work.
+	
+	
+	-- Instansiate FSM
+    
+    
+    
 	process
 	
 	begin
