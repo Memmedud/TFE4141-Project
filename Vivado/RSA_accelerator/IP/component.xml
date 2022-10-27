@@ -328,7 +328,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>9413b01e</spirit:value>
+            <spirit:value>9b8aea2c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -344,7 +344,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3a20dfa4</spirit:value>
+            <spirit:value>3bdf02ac</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -922,6 +922,16 @@
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>src/FSM.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>src/blakley.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>src/rsa_regio.vhd</spirit:name>
         <spirit:userFileType>vhdlSource-2008</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
@@ -955,6 +965,16 @@
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>src/FSM.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>src/blakley.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
+      </spirit:file>
       <spirit:file>
         <spirit:name>src/rsa_regio.vhd</spirit:name>
         <spirit:userFileType>vhdlSource-2008</spirit:userFileType>
@@ -1062,23 +1082,23 @@
       <xilinx:displayName>RSA_accelerator_v1_0</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:coreRevision>2</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-10-17T14:55:45Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2022-10-27T09:29:20Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5946e2dc_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/DDS-prosjekt/tfe4141_rsa_integration_kit_2020/RSA_accelerator/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6d6b3f97_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/DDS-prosjekt/tfe4141_rsa_integration_kit_2020/RSA_accelerator/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7891adb0_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/DDS-prosjekt/tfe4141_rsa_integration_kit_2020/RSA_accelerator/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f84f4d4_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/DDS-prosjekt/tfe4141_rsa_integration_kit_2020/RSA_accelerator/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f972ea7_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/DDS-prosjekt/tfe4141_rsa_integration_kit_2020/RSA_accelerator/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e17adec_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/DDS-prosjekt/tfe4141_rsa_integration_kit_2020/RSA_accelerator/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f5531_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/DDS-prosjekt/tfe4141_rsa_integration_kit_2020/RSA_accelerator/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7c634df_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/DDS-prosjekt/tfe4141_rsa_integration_kit_2020/RSA_accelerator/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7ba90fea_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/TFE4141/Vivado/RSA_accelerator/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4641c9e9_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/TFE4141/Vivado/RSA_accelerator/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e99c794_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/TFE4141/Vivado/RSA_accelerator/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@39be9d28_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/TFE4141/Vivado/RSA_accelerator/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3de548c7_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/TFE4141/Vivado/RSA_accelerator/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@43aeabbd_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/TFE4141/Vivado/RSA_accelerator/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@8714bfd_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/TFE4141/Vivado/RSA_accelerator/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7c538946_ARCHIVE_LOCATION">c:/Users/Maths/Desktop/TFE4141/Vivado/RSA_accelerator/IP</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="438212c9"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="871c369d"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="94bbe413"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="370fe7fc"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="5374d2dd"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="2d841084"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="f2ed1cff"/>
