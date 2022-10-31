@@ -14,19 +14,20 @@ entity FSM is
         ready_out       : in STD_LOGIC;
 
         index           : out std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-        
+        write_mes       : out std_logic;
+        blakely_enable  : out std_logic;
+        blakely_done    : in  std_logic;
+
+        -- Clock and reset
         clk             : in STD_LOGIC;
-        rst_n           : in STD_LOGIC;
-        
-        write_mes       : out std_logic
+        rst_n           : in STD_LOGIC
     );
 end FSM;
 
 architecture Behavioral of FSM is
 
+-- FSM states
 type state_type is (IDLE, CALCULATING, MODMUL, PRINT);
-
-
 signal state        : state_type := IDLE;
 signal state_nxt    : state_type := IDLE;
 
@@ -63,13 +64,8 @@ begin
     -- Combinatorial datapath
     process(valid_in, ready_out, counterRSA, counterModMul, state, clk)
     begin
-        index <= std_logic_vector(counterRSA);
-
         case (state) is
         when IDLE =>
-            ready_in <= '0';
-            valid_out <= '0';
-            write_mes <= '1';
             if (valid_in = '1') then
                 state_nxt <= CALCULATING;
             else 
@@ -77,31 +73,20 @@ begin
             end if;
             
         when CALCULATING =>
-            valid_out <= '0';
-            ready_in <= '0';
-            write_mes <= '0';
             if (counterRSA = 255) then
                 state_nxt <= PRINT;
             else
                 state_nxt <= MODMUL;
             end if;
 
-        when MODMUL =>
-            valid_out <= '0';
-            ready_in <= '0';
-            write_mes <= '0';        
+        when MODMUL =>       
             if (counterModMul = 255) then
                 state_nxt <= CALCULATING;
             else 
                 state_nxt <= MODMUL;
-                valid_out <= '0';
-                ready_in <= '0';
             end if;
 
         when PRINT =>
-            valid_out <= '1';
-            ready_in <= '0';
-            write_mes <= '0';
             if (ready_out = '1') then
                 state_nxt <= IDLE;
             else
@@ -109,6 +94,26 @@ begin
             end if;
         end case;
     end process;
+
+    process(state)
+    begin
+        case (state) is
+        when IDLE =>
+            ready_in <= '0';
+            valid_out <= '0';
+            write_mes <= '1';
+
+        when CALCULATING =>
+            valid_out <= '0';
+            ready_in <= '0';
+            write_mes <= '0';
+
+        when PRINT =>
+            valid_out <= '1';
+            ready_in <= '0';
+            write_mes <= '0';
+    end process;
     
+    index <= std_logic_vector(counterRSA);
 
 end Behavioral;
