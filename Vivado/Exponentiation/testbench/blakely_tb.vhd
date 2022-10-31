@@ -35,11 +35,13 @@ procedure case1(
     result, result_nxt 
 )is 
     -- var list 
+    variable temp   :   integer;
 begin
     a   <= (others => '0');
     bi  <= 0; 
     result_r <= result_nxt;
     -- wait for 5*clk_period; 
+    temp <= to_integer(a);
     report "The value of a is" & integer'image(a);  -- prints a if a is an integer
 end case1;
 
