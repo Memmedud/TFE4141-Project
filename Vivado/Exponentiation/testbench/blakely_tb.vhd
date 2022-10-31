@@ -26,6 +26,9 @@ begin
             
         )
 
+-- clock generation 
+clk <= not clk after clk_period / 2;
+
 -- case 1 
 procedure case1(
     -- signal list
@@ -33,12 +36,16 @@ procedure case1(
 )is 
     -- var list 
 begin
-    a   <= 0;
+    a   <= (others => '0');
     bi  <= 0; 
     result_r <= result_nxt;
+    -- wait for 5*clk_period; 
     report "The value of a is" & integer'image(a);  -- prints a if a is an integer
 end case1;
 
+procedure case2(
+    result, result
+)
         
 end blakelyBehave;
 

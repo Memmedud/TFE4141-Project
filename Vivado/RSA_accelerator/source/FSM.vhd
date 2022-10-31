@@ -36,8 +36,8 @@ signal counterModMul    : unsigned(integer(ceil(log2(real(C_block_size))))-1 dow
 signal counterRSA       : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
 
 begin
-    -- Sequential datapath
-    process(clk, rst_n)
+    -- Clock in the next state
+    process(clk, rst_n)       
     begin
         if (rst_n = '0') then
             state <= IDLE;
@@ -46,6 +46,7 @@ begin
         end if;
     end process;
 
+    -- Controll counters
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
@@ -61,8 +62,8 @@ begin
         end if;
     end process;
 
-    -- Combinatorial datapath
-    process(valid_in, ready_out, counterRSA, counterModMul, state, clk)
+    -- Calculate the next state
+    process(valid_in, ready_out, counterRSA, counterModMul, state)
     begin
         case (state) is
         when IDLE =>
@@ -73,14 +74,14 @@ begin
             end if;
             
         when CALCULATING =>
-            if (counterRSA = 255) then
+            if (counterRSA = C_block_size-1) then
                 state_nxt <= PRINT;
             else
                 state_nxt <= MODMUL;
             end if;
 
         when MODMUL =>       
-            if (counterModMul = 255) then
+            if (counterModMul = C_block_size-1) then
                 state_nxt <= CALCULATING;
             else 
                 state_nxt <= MODMUL;
@@ -95,6 +96,7 @@ begin
         end case;
     end process;
 
+    -- Assign output signals according to state
     process(state)
     begin
         case (state) is
@@ -102,16 +104,25 @@ begin
             ready_in <= '0';
             valid_out <= '0';
             write_mes <= '1';
+            blakely_enable <= '0';
 
         when CALCULATING =>
             valid_out <= '0';
             ready_in <= '0';
             write_mes <= '0';
+            blakely_enable <= '0';
+
+        when MODMUL =>
+            valid_out <= '0';
+            ready_in <= '0';
+            write_mes <= '0';
+            blakely_enable <= '1';
 
         when PRINT =>
             valid_out <= '1';
             ready_in <= '0';
             write_mes <= '0';
+            blakely_enable <= '0';
     end process;
     
     index <= std_logic_vector(counterRSA);
