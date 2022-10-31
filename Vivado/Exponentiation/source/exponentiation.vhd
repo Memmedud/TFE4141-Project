@@ -51,6 +51,7 @@ signal result_P     : std_logic_vector(C_block_size-1 downto 0);
 
 -- FSM signals
 signal index        : std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
+signal write_mes    : std_logic;
 
 begin   
 	-- Instansiate Two Blakely modules
@@ -109,7 +110,7 @@ begin
     process(clk, reset_n)
     begin
         if (reset_n = '0') then
-            C_r <= (others => '1');
+            C_r <= (0 => '1', others => '0');
 			P_r <= (others => '0');
         elsif (rising_edge(clk)) then
             C_r <= C_nxt;
@@ -118,17 +119,23 @@ begin
     end process;
     
     -- Combinatorial datapath
-    process(index, key, result_C, C_r)
+    process(index, key, result_C, C_r, write_mes, valid_in)
     begin
-        if (key(to_integer(unsigned(index))) = '1') then
-            C_nxt <= result_C;
-        else 
-            C_nxt <= C_r;
+        if (write_mes = '1' and valid_in = '1') then
+            C_nxt <= (0 => '1', others => '0');
+            P_nxt <= message;
+        else
+            if(key(to_integer(unsigned(index))) = '1') then
+                C_nxt <= result_C;
+                P_nxt <= result_P;
+            else 
+                C_nxt <= C_r;
+                P_nxt <= result_P;
+            end if;
         end if;
     end process;
    
-   bi <= P_r(to_integer(unsigned(index)));
-   P_nxt <= result_P;
-   result <= C_r;
+    bi <= P_r(to_integer(unsigned(index)));
+    result <= C_r;
    
 end expBehave;

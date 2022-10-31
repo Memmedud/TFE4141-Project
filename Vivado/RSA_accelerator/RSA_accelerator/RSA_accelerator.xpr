@@ -43,7 +43,7 @@
     <Option Name="DSABoardId" Val="pynq-z1"/>
     <Option Name="DSADescription" Val="Vivado generated DSA"/>
     <Option Name="DSAEmuDir" Val="emu"/>
-    <Option Name="WTXSimLaunchSim" Val="24"/>
+    <Option Name="WTXSimLaunchSim" Val="72"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -126,6 +126,7 @@
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="RSA_accelerator"/>
+        <Option Name="LoopCount" Val="1010"/>
       </Config>
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
@@ -171,6 +172,11 @@
       <File Path="$PPRDIR/../testbench/rsa_tests/short_tests/otp_messages/short_test.otp_messages.hex_pt3_out.txt"/>
       <File Path="$PPRDIR/../testbench/rsa_tests/short_tests/otp_messages/short_test.otp_messages.hex_pt4_out.txt"/>
       <File Path="$PPRDIR/../testbench/rsa_tests/short_tests/otp_messages/short_test.otp_messages.hex_pt5_out.txt"/>
+      <File Path="$PPRDIR/RSA_accelerator_tb_behav.wcfg">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="RSA_accelerator_tb"/>
@@ -183,6 +189,10 @@
         <Option Name="PamSignalDriverFile" Val="xil_bypass_driver"/>
         <Option Name="PamPseudoTop" Val="pseudo_tb"/>
         <Option Name="SrcSet" Val="sources_1"/>
+        <Option Name="XSimWcfgFile" Val="$PPRDIR/RSA_accelerator_tb_behav.wcfg"/>
+        <Option Name="xsim.simulate.runtime" Val="10000000"/>
+        <Option Name="xsim.simulate.log_all_signals" Val="true"/>
+        <Option Name="xsim.simulate.no_quit" Val="true"/>
         <Option Name="NLNetlistMode" Val="funcsim"/>
       </Config>
     </FileSet>

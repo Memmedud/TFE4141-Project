@@ -16,7 +16,9 @@ entity FSM is
         index           : out std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
         
         clk             : in STD_LOGIC;
-        rst_n           : in STD_LOGIC
+        rst_n           : in STD_LOGIC;
+        
+        write_mes       : out std_logic
     );
 end FSM;
 
@@ -61,30 +63,33 @@ begin
     -- Combinatorial datapath
     process(valid_in, ready_out, counterRSA, counterModMul, state, clk)
     begin
-        index <= (others => '0');--std_logic_vector(counterRSA);
+        index <= std_logic_vector(counterRSA);
 
         case (state) is
         when IDLE =>
+            ready_in <= '0';
+            valid_out <= '0';
+            write_mes <= '1';
             if (valid_in = '1') then
                 state_nxt <= CALCULATING;
             else 
                 state_nxt <= IDLE;
-                ready_in <= '1';
-                valid_out <= '0';
             end if;
             
         when CALCULATING =>
+            valid_out <= '0';
+            ready_in <= '0';
+            write_mes <= '0';
             if (counterRSA = 255) then
                 state_nxt <= PRINT;
-            elsif (not(counterRSA = 0)) then
-                state_nxt <= MODMUL;
             else
-                state_nxt <= CALCULATING;
-                ready_in <= '0';    
-                valid_out <= '0';
+                state_nxt <= MODMUL;
             end if;
 
         when MODMUL =>
+            valid_out <= '0';
+            ready_in <= '0';
+            write_mes <= '0';        
             if (counterModMul = 255) then
                 state_nxt <= CALCULATING;
             else 
@@ -94,12 +99,13 @@ begin
             end if;
 
         when PRINT =>
+            valid_out <= '1';
+            ready_in <= '0';
+            write_mes <= '0';
             if (ready_out = '1') then
                 state_nxt <= IDLE;
             else
                 state_nxt <= PRINT;
-                valid_out <= '1';
-                ready_in <= '0';
             end if;
         end case;
     end process;

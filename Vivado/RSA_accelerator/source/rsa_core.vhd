@@ -89,7 +89,7 @@ begin
 
 	msgout_last  <= '0';
 	rsa_status   <= (others => '0');
-	nega_n <= (others => '0');--std_logic_vector(-signed(key_n));
+	nega_n <= std_logic_vector(-signed(key_n));
 	nega_2n <= std_logic_vector(-signed(shift_left(unsigned(key_n), 1)));
 	
 end rtl;
