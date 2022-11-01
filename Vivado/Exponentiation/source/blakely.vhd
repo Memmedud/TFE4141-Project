@@ -7,14 +7,16 @@ entity blakely is
         C_block_size : integer := 256
     );
     port (
-        -- Inputs
+        -- Clock and reset
         clk         :  in STD_LOGIC;
         rst_n       :  in STD_LOGIC;
 
+        -- Inputs
         a           :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
-        bi          :  in STD_LOGIC;                                         -- From PISO register
+        bi          :  in STD_LOGIC;
         nega_n      :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
         nega_2n     :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
+        enable      :  in std_logic;
 
         -- Outputs
         result      : out STD_LOGIC_VECTOR(C_block_size - 1 downto 0)
@@ -42,7 +44,10 @@ begin
         if (rst_n = '0') then
             result_r <= (others => '0');
         elsif (rising_edge(clk)) then
-            result_r <= result_nxt;
+            if (enable = '1') then
+                result_r <= result_nxt;
+            else
+                result_r <= result_r;
         end if;
     end process;
 

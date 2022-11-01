@@ -11,6 +11,8 @@ end exponentiation_tb;
 
 architecture expBehave of exponentiation_tb is
 
+	constant clk_period : time := 5 ns;
+
 	signal message 		: STD_LOGIC_VECTOR ( C_block_size-1 downto 0 );
 	signal key 			: STD_LOGIC_VECTOR ( C_block_size-1 downto 0 );
 	signal valid_in 	: STD_LOGIC;
@@ -38,6 +40,9 @@ begin
 			clk       => clk      ,
 			reset_n   => reset_n
 		);
+
+	-- clock generation 
+	clk <= not clk after clk_period / 2; 
 
 
 end expBehave;
