@@ -9,25 +9,25 @@ entity exponentiation is
 	);
 	port (
 		-- input control
-		valid_in	: in STD_LOGIC;
-		ready_in	: out STD_LOGIC;
+		valid_in	: in  std_logic;
+		ready_in	: out std_logic;
 
 		-- input data
-		message 	: in STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-		key 		: in STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-		nega_n    	: in STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-		nega_2n 	: in STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+		message 	: in std_logic_VECTOR(C_block_size-1 downto 0);
+		key 		: in std_logic_VECTOR(C_block_size-1 downto 0);
+		nega_n    	: in std_logic_VECTOR(C_block_size-1 downto 0);
+		nega_2n 	: in std_logic_VECTOR(C_block_size-1 downto 0);
 
 		-- ouput control
-		ready_out	: in STD_LOGIC;
-		valid_out	: out STD_LOGIC;
+		ready_out	: in  std_logic;
+		valid_out	: out std_logic;
 
 		-- output data
-		result 		: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+		result 		: out std_logic_VECTOR(C_block_size-1 downto 0);
 
 		-- utility
-		clk 		: in STD_LOGIC;
-		reset_n 	: in STD_LOGIC
+		clk 		: in std_logic;
+		reset_n 	: in std_logic
 	);
 end exponentiation;
 
@@ -41,7 +41,7 @@ signal P_nxt        : std_logic_vector(C_block_size-1 downto 0);
 signal C_nxt        : std_logic_vector(C_block_size-1 downto 0);
 
 -- PISO signals
-signal bi           : STD_LOGIC;
+signal bi           : std_logic;
 signal store_M      : std_logic;
 signal store_P      : std_logic;
 
@@ -61,14 +61,14 @@ begin
 	   )
 	   port map (
 	       -- Inputs
-	       clk => clk,
-	       rst_n => reset_n,
-	       a => C_r,
-	       bi => bi,
-	       nega_n => nega_n,
-	       nega_2n => nega_2n,
+	       clk 		=> clk,
+	       rst_n 	=> reset_n,
+	       a 		=> C_r,
+	       bi 		=> bi,
+	       nega_n 	=> nega_n,
+	       nega_2n 	=> nega_2n,
 	       -- Outputs
-	       result => result_C
+	       result 	=> result_C
 	   );
 	   
 	 in_blakely_P : entity work.blakely
@@ -77,14 +77,14 @@ begin
 	   )
 	   port map (
 	       -- Inputs
-	       clk => clk,
-	       rst_n => reset_n,
-	       a => P_r,
-	       bi => bi,
-	       nega_n => nega_n,
-	       nega_2n => nega_2n,
+	       clk 		=> clk,
+	       rst_n 	=> reset_n,
+	       a 		=> P_r,
+	       bi 		=> bi,
+	       nega_n 	=> nega_n,
+	       nega_2n 	=> nega_2n,
 	       -- Outputs
-	       result => result_P
+	       result 	=> result_P
 	   );
 	
 	
@@ -95,14 +95,14 @@ begin
         )
         port map (
             -- Inputs
-            valid_in => valid_in,
-			ready_out => ready_out,
-			clk => clk,
-			rst_n => reset_n,
+            valid_in 	=> valid_in,
+			ready_out 	=> ready_out,
+			clk 		=> clk,
+			rst_n 		=> reset_n,
             -- Outputs
-			valid_out => valid_out,
-			ready_in => ready_in,
-			index => index
+			valid_out 	=> valid_out,
+			ready_in 	=> ready_in,
+			index 		=> index
         );
     
     
