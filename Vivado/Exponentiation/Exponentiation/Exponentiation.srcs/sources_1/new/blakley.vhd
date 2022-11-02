@@ -16,7 +16,6 @@ entity blakely is
         a               :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
         b               :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
         n               :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
-        n_shifted       :  in STD_LOGIC_VECTOR(C_block_size downto 0);
         blakely_enable  :  in STD_LOGIC;
 
         -- Outputs
@@ -28,6 +27,7 @@ end blakely;
 architecture rtl of blakely is
 
 signal bi               : STD_LOGIC;
+signal n_shifted        : STD_LOGIC_VECTOR(C_block_size downto 0);
 
 signal result_nxt       : STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
 signal result_bitshift  : STD_LOGIC_VECTOR(C_block_size downto 0);
@@ -59,7 +59,7 @@ begin
                 counter <= std_logic_vector(unsigned(counter) - 1);
                 blakely_done <= blakely_done_nxt;
             else
-                result_r <= result_r;
+                result_r <= (others => '0');
                 counter <= (others => '1');
                 blakely_done <= '0';
             end if;
@@ -110,7 +110,7 @@ begin
     end process;
     
     result <= result_r;
+    n_shifted <= STD_LOGIC_VECTOR(shift_left(resize(unsigned(n), C_block_size+1), 1));
     bi <= b(to_integer(unsigned(counter)));
     
 end rtl;
-

@@ -6,10 +6,10 @@ use ieee.numeric_std.all;
 library std;
 use std.textio.all;
 
-entity exponentiation_tb is 
-end entity exponentiation_tb;
+entity blakely_tb is 
+end entity blakely_tb;
 
-architecture blakely_tb_behave of exponentiation_tb is
+architecture blakely_tb_behave of blakely_tb is
 
     constant C_block_size   : integer := 256;
     
@@ -99,7 +99,6 @@ begin
 	-- Testbench procedure
     process
     begin
-      
         report "********************************************************************************";
         report "STARTING FIRST TESTCASE";
         report "********************************************************************************";
@@ -132,8 +131,9 @@ begin
         a <= x"0a23232323232323232323232323232323232323232323232323232323232323"; --str_to_stdvec("85ee722363960779206a2b37cc8b64b5fc12a934473fa0204bbaaf714bc90c01");
         b <= x"0a23232323232323232323232323232323232323232323232323232323232323"; --str_to_stdvec("85ee722363960779206a2b37cc8b64b5fc12a934473fa0204bbaaf714bc90c01");
         expected <= x"24931802b9ead447563ec7f0f3d613270a5dd5f3d3df1457b9857de14da1a750"; --str_to_stdvec("80291d6bcaeec4accc8cadf9dcc350b3c13dad526cec43bdb3d72f2d4628f697");
-           
+        
         -- Waiting for different stuff
+        wait until rst_n = '1';
         wait until rising_edge(clk);
         blakely_enable <= '1';
         wait until blakely_done = '1';
@@ -182,7 +182,7 @@ begin
 
         a               => a,
         b               => b,
-        n               => n,
+        n               => std_logic_vector(n),
         blakely_enable  => blakely_enable,
 
         result          => result,
