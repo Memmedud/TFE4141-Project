@@ -25,7 +25,7 @@ entity exponentiation is
 		-- output data
 		result 		: out std_logic_VECTOR(C_block_size-1 downto 0);
 
-		-- clock and reset
+		-- utility
 		clk 		: in std_logic;
 		reset_n 	: in std_logic
 	);
@@ -40,13 +40,14 @@ signal C_r          : std_logic_vector(C_block_size-1 downto 0);
 signal P_nxt        : std_logic_vector(C_block_size-1 downto 0);
 signal C_nxt        : std_logic_vector(C_block_size-1 downto 0);
 
+-- PISO signals
+signal bi           : std_logic;
+signal store_M      : std_logic;
+signal store_P      : std_logic;
+
 -- Blakely signals
-signal result_C     	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-signal result_P     	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-signal blakely_done 	: STD_LOGIC;
-signal blakely_done_C	: STD_LOGIC;
-signal blakely_done_P 	: STD_LOGIC;
-signal blakely_enable	: STD_LOGIC;
+signal result_C     : std_logic_vector(C_block_size-1 downto 0);
+signal result_P     : std_logic_vector(C_block_size-1 downto 0);
 
 -- FSM signals
 signal index        : std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
@@ -55,47 +56,40 @@ signal write_mes    : std_logic;
 begin   
 	-- Instansiate Two Blakely modules
 	in_blakely_C : entity work.blakely
-	   	generic map (
-	       	C_block_size => C_block_size
-	   	)
-	   	port map (
-	       	-- Inputs
-	       	clk 				=> clk,
-	       	rst_n 			=> reset_n,
-	       	a 				=> C_r,
-	       	b 				=> b,
-	       	nega_n 			=> nega_n,
-	       	nega_2n 		=> nega_2n,
-		   	blakely_enable 	=> blakely_enable,
-
-	       	-- Outputs
-	       	result 			=> result_C,
-			blakely_done	=> blakely_done_C
-
+	   generic map (
+	       C_block_size => C_block_size
+	   )
+	   port map (
+	       -- Inputs
+	       clk 		=> clk,
+	       rst_n 	=> reset_n,
+	       a 		=> C_r,
+	       bi 		=> bi,
+	       nega_n 	=> nega_n,
+	       nega_2n 	=> nega_2n,
+	       -- Outputs
+	       result 	=> result_C
 	   );
 	   
-	in_blakely_P : entity work.blakely
-	   	generic map (
+	 in_blakely_P : entity work.blakely
+	   generic map (
 	       C_block_size => C_block_size
-	   	)
-	   	port map (
-	        -- Inputs
-	        clk 			=> clk,
-	        rst_n 			=> reset_n,
-	        a 				=> P_r,
-	        b  				=> b,
-	        nega_n 			=> nega_n,
-	        nega_2n 		=> nega_2n,
-			blakely_enable  => blakely_enable,
-	        
-			-- Outputs
-	        result 			=> result_P,
-			blakely_done 	=> blakely_done_P
+	   )
+	   port map (
+	       -- Inputs
+	       clk 		=> clk,
+	       rst_n 	=> reset_n,
+	       a 		=> P_r,
+	       bi 		=> bi,
+	       nega_n 	=> nega_n,
+	       nega_2n 	=> nega_2n,
+	       -- Outputs
+	       result 	=> result_P
 	   );
 	
 	
 	-- Instansiate FSM
-    /*in_FSM : entity work.FSM
+    in_FSM : entity work.FSM
         generic map (
             C_block_size => C_block_size
         )
@@ -109,7 +103,7 @@ begin
 			valid_out 	=> valid_out,
 			ready_in 	=> ready_in,
 			index 		=> index
-        );*/
+        );
     
     
     -- Sequential datapath
@@ -141,7 +135,7 @@ begin
         end if;
     end process;
    
+    bi <= P_r(to_integer(unsigned(index)));
     result <= C_r;
-	blakely_done <= blakely_done_C and blakely_done_P;
    
 end expBehave;

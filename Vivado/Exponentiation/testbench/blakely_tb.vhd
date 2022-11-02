@@ -1,6 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
-
+use ieee.numeric_std.all;
 
 entity blakely_tb is 
     generic (
@@ -8,27 +8,66 @@ entity blakely_tb is
     );
 end entity blakely_tb;
 
-architecture blakelyBehave of blakely_tb is
-    constant clk_period : time := 5 ns;
+architecture blakely_tb_behave of blakely_tb is
+    -- clock and reset
+    constant clk_period     : time := 10 ns;
+    signal clk              : STD_LOGIC;
+    signal rst_n            : STD_LOGIC;
 
-    signal result       : STD_LOGIC_VECTOR (C_block_size-1 downto 0);
-    signal a            : STD_LOGIC_VECTOR (C_block_size-1 downto 0);
-    signal b            : STD_LOGIC_VECTOR (C_block_size-1 downto 0);
-    signal bi           : STD_LOGIC; 
-    signal nega_n       : STD_LOGIC;
-    signal nega_2n      : STD_LOGIC;
-    signal result_nxt   : STD_LOGIC_VECTOR (C_block_size-1 downto 0);
-    signal result_r     : STD_LOGIC_VECTOR (C_block_size-1 downto 0);
+    -- Blakely signals
+    signal a                : STD_LOGIC_VECTOR (C_block_size-1 downto 0);
+    signal b                : STD_LOGIC_VECTOR (C_block_size-1 downto 0);
+    signal bi               : STD_LOGIC; 
+    signal n                : STD_LOGIC_VECTOR(C_block_size-1 downto 0)
+    signal nega_n           : STD_LOGIC_VECTOR(C_block_size-1 downto 0)
+    signal nega_2n          : STD_LOGIC_VECTOR(C_block_size-1 downto 0)
+    signal blakely_enable   : STD_LOGIC;
+    signal result           : STD_LOGIC_VECTOR (C_block_size-1 downto 0);
+    signal blakely_done     : STD_LOGIC;
+
+    -- FSM signals
+    type states is (LOAD, WAIT, VALIDATE);
+    signal tb_state         : states := LOAD;
+    signal tb_state_nxt     : states := LOAD;
 
 begin
+
+    -- Instance of Blakely module (DUT)
     i_blakely : entity work.blakely
-        port map (
-            
-        )
+    generic map (
+        C_block_size => C_block_size
+    )
+    port map (
+        clk             => clk,
+        rst_n           => rst_n,
+
+        a               => a,
+        b               => b,
+        nega_n          => nega_n,
+        nega_2n         => nega_2n,
+        blakely_enable  => blakely_enable,
+
+        result          => result,
+        blakely_done    => blakely_done
+    )
 
 -- clock generation 
 clk <= not clk after clk_period / 2;
 
+-- reset_n generator
+reset_gen: process is
+begin
+    reset_n <= '0';
+    wait for 20 ns;
+    reset_n <= '1';
+    wait;
+end process;
+
+-- Generate negative n
+nega_n <= STD_LOGIC_VECTOR(-signed(n));
+nega_n <= STD_LOGIC_VECTOR(-signed(shift_left(n, 1)));
+
+-- Function for converting std_vector to string
 function stdvec_to_string ( a: std_logic_vector) return string is
     variable b : string (a'length/4 downto 1) := (others => NUL);
     variable nibble : std_logic_vector(3 downto 0);
@@ -54,11 +93,11 @@ begin
             when "1111" => b(i) := 'F';
             when others => b(i) := 'X';
         end case;
-
     end loop;
     return b;
 end function;
 
+-- Function for converting string to std_vector
 function str_to_stdvec(inp: string) return std_logic_vector is
     variable temp: std_logic_vector(4*inp'length-1 downto 0) := (others => 'X');
     variable temp1 : std_logic_vector(3 downto 0);
@@ -88,6 +127,37 @@ begin
     return temp;
 end function str_to_stdvec;
 
+procedure is
+begin
+    report "********************************************************************************";
+	report "STARTING NEW TESTCASE";
+	report "********************************************************************************";
+    
+    -- Set up input signals
+    n <= str_to_stdvec("99925173ad65686715385ea800cd28120288fc70a9bc98dd4c90d676f8ff768d");
+    a <= str_to_stdvec("85ee722363960779206a2b37cc8b64b5fc12a934473fa0204bbaaf714bc90c01");
+    b <= str_to_stdvec("85ee722363960779206a2b37cc8b64b5fc12a934473fa0204bbaaf714bc90c01");
+    variable expected := str_to_stdvec("171d075bdfd834ddf0433a8092d9fb9b823c353b651d89fea0079588538cbb8a")
+    
+    -- Waiting for different stuff
+    wait until rst_n = '1';
+    wait until rising_edge(clk);
+    blakely_enable <= '1';
+    wait until blakely_done = '1';
+
+    -- Check the result;
+    assert (result = expected)
+        report "Output message differs from the expected result"
+		everity Failure;
+
+    -- Report done and wait forever
+    report "********************************************************************************";
+	report "ALL TESTS FINISHED SUCCESSFULLY";
+	report "********************************************************************************";
+    wait;
+end procedure;
+
+/*
 -- case 1 
 procedure case1(
     -- signal list
@@ -115,7 +185,7 @@ procedure case2(
              
 
         end process
-        
-end blakelyBehave;
+        */
+end blakely_tb_behave;
 
 
