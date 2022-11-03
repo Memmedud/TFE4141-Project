@@ -8,123 +8,117 @@ entity FSM is
         C_block_size    : integer := 256
     );
     Port(
+        clk             : in STD_LOGIC;
+        rst_n           : in STD_LOGIC;
+
         valid_in        : in STD_LOGIC;
         valid_out       : out STD_LOGIC;
         ready_in        : out STD_LOGIC;
         ready_out       : in STD_LOGIC;
 
-        index           : out std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-        write_mes       : out std_logic;
-        blakely_enable  : out std_logic;
         blakely_done    : in  std_logic;
+        blakely_enable  : out std_logic; 
 
-        -- Clock and reset
-        clk             : in STD_LOGIC;
-        rst_n           : in STD_LOGIC
+        e_index         : out std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
+        write_mes       : out std_logic
     );
 end FSM;
 
 architecture Behavioral of FSM is
 
--- FSM states
-type state_type is (IDLE, CALCULATING, MODMUL, PRINT);
-signal state        : state_type := IDLE;
-signal state_nxt    : state_type := IDLE;
+type state_type is (WAITING, CALCULATING, BLAKELY, OUTPUTTING);
+signal state        : state_type;
+signal state_nxt    : state_type;
 
 -- Counters
-signal counterModMul    : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-signal counterRSA       : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
+signal counter          : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
+signal RSA_done         : std_logic;
 
 begin
-    -- Clock in the next state
-    process(clk, rst_n)       
+    -- Sequential datapath
+    process(clk, rst_n)
     begin
         if (rst_n = '0') then
-            state <= IDLE;
+            state <= WAITING;
         elsif (rising_edge(clk)) then
             state <= state_nxt;
         end if;
     end process;
 
-    -- Controll counters
+    -- Counters
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
-            counterModMul   <= (others => '0');
-            counterRSA      <= (others => '0');
+            counter         <= (others => '0');
         elsif (rising_edge(clk)) then
-            if (state = MODMUL) then
-                counterModMul <= counterModMul + 1;
-            end if;
             if (state = CALCULATING) then
-                counterRSA <= counterRSA + 1;
+                counter <= counter + 1;
+            else
+                counter <= counter;
             end if;
         end if;
     end process;
 
-    -- Calculate the next state
-    process(valid_in, ready_out, counterRSA, counterModMul, state)
+    -- FSM state controll
+    process(valid_in, ready_out, state, blakely_done)
     begin
         case (state) is
-        when IDLE =>
+        when WAITING =>
             if (valid_in = '1') then
-                state_nxt <= CALCULATING;
+                state_nxt <= BLAKELY;
             else 
-                state_nxt <= IDLE;
+                state_nxt <= WAITING;
             end if;
             
         when CALCULATING =>
-            if (counterRSA = C_block_size-1) then
-                state_nxt <= PRINT;
+            if (counter = 255) then
+                state_nxt <= OUTPUTTING;
             else
-                state_nxt <= MODMUL;
+                state_nxt <= BLAKELY;
             end if;
 
-        when MODMUL =>       
-            if (counterModMul = C_block_size-1) then
+        when BLAKELY =>
+            if (blakely_done = '1') then
                 state_nxt <= CALCULATING;
             else 
-                state_nxt <= MODMUL;
+                state_nxt <= BLAKELY;
             end if;
 
-        when PRINT =>
+        when OUTPUTTING =>
             if (ready_out = '1') then
-                state_nxt <= IDLE;
+                state_nxt <= WAITING;
             else
-                state_nxt <= PRINT;
+                state_nxt <= OUTPUTTING;
             end if;
         end case;
     end process;
 
-    -- Assign output signals according to state
+    -- FSM output control
     process(state)
     begin
         case (state) is
-        when IDLE =>
-            ready_in <= '0';
-            valid_out <= '0';
-            write_mes <= '1';
-            blakely_enable <= '0';
+        when WAITING => 
+            ready_in        <= '1';
+            valid_out       <= '0';
+            blakely_enable  <= '0';
 
         when CALCULATING =>
-            valid_out <= '0';
-            ready_in <= '0';
-            write_mes <= '0';
-            blakely_enable <= '0';
+            ready_in        <= '0';
+            valid_out       <= '0';
+            blakely_enable  <= '0';
 
-        when MODMUL =>
-            valid_out <= '0';
-            ready_in <= '0';
-            write_mes <= '0';
-            blakely_enable <= '1';
-
-        when PRINT =>
-            valid_out <= '1';
-            ready_in <= '0';
-            write_mes <= '0';
-            blakely_enable <= '0';
-    end process;
+        when BLAKELY =>
+            ready_in        <= '0';
+            valid_out       <= '0';
+            blakely_enable  <= '1';
     
-    index <= std_logic_vector(counterRSA);
 
+        when OUTPUTTING =>
+            ready_in        <= '0';
+            valid_out       <= '1';
+            blakely_enable  <= '0';
+
+        end case;
+    end process;
+  
 end Behavioral;

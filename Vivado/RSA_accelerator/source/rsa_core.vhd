@@ -65,8 +65,7 @@ end rsa_core;
 
 architecture rtl of rsa_core is
 
-signal nega_n       : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
-signal nega_2n       : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+
 
 begin
 	i_exponentiation : entity work.exponentiation
@@ -81,15 +80,12 @@ begin
 			ready_out => msgout_ready,
 			valid_out => msgout_valid,
 			result    => msgout_data ,
-			nega_n    => nega_n      ,
-			nega_2n   => nega_2n     ,
+			n         => key_n       ,
 			clk       => clk         ,
 			reset_n   => reset_n
 		);
 
 	msgout_last  <= '0';
 	rsa_status   <= (others => '0');
-	nega_n <= std_logic_vector(-signed(key_n));
-	nega_2n <= std_logic_vector(-signed(shift_left(unsigned(key_n), 1)));
 	
 end rtl;

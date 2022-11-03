@@ -8,29 +8,30 @@ entity FSM is
         C_block_size    : integer := 256
     );
     Port(
+        clk             : in STD_LOGIC;
+        rst_n           : in STD_LOGIC;
+
         valid_in        : in STD_LOGIC;
         valid_out       : out STD_LOGIC;
         ready_in        : out STD_LOGIC;
         ready_out       : in STD_LOGIC;
 
-        index           : out std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-        
-        clk             : in STD_LOGIC;
-        rst_n           : in STD_LOGIC
+        blakely_done    : in  std_logic;
+        blakely_enable  : out std_logic; 
+
+        e_index         : out std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0)
     );
 end FSM;
 
 architecture Behavioral of FSM is
 
-type state_type is (IDLE, CALCULATING, MODMUL, PRINT);
-
-
-signal state        : state_type := IDLE;
-signal state_nxt    : state_type := IDLE;
+type state_type is (WAITING, CALCULATING, BLAKELY, OUTPUTTING);
+signal state        : state_type;
+signal state_nxt    : state_type;
 
 -- Counters
-signal counterModMul    : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-signal counterRSA       : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
+signal counter          : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
+signal RSA_done         : std_logic;
 
 begin
     -- Sequential datapath
@@ -43,66 +44,83 @@ begin
         end if;
     end process;
 
+    -- Counters
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
-            counterModMul   <= (others => '0');
-            counterRSA      <= (others => '0');
+            counter         <= (others => '0');
         elsif (rising_edge(clk)) then
-            if (state = MODMUL) then
-                counterModMul <= counterModMul + 1;
-            end if;
             if (state = CALCULATING) then
-                counterRSA <= counterRSA + 1;
+                counter <= counter + 1;
+            else
+                counter <= counter;
             end if;
         end if;
     end process;
 
-    -- Combinatorial datapath
-    process(valid_in, ready_out, counterRSA, counterModMul, state, clk)
+    -- FSM state controll
+    process(valid_in, ready_out, state, blakely_done)
     begin
-        index <= (others => '0');--std_logic_vector(counterRSA);
-
         case (state) is
-        when IDLE =>
+        when WAITING =>
             if (valid_in = '1') then
-                state_nxt <= CALCULATING;
+                state_nxt <= BLAKELY;
             else 
-                state_nxt <= IDLE;
-                ready_in <= '1';
-                valid_out <= '0';
+                state_nxt <= WAITING;
             end if;
             
         when CALCULATING =>
-            if (counterRSA = 255) then
-                state_nxt <= PRINT;
-            elsif (not(counterRSA = 0)) then
-                state_nxt <= MODMUL;
+            if (counter = 255) then
+                state_nxt <= OUTPUTTING;
             else
-                state_nxt <= CALCULATING;
-                ready_in <= '0';    
-                valid_out <= '0';
+                state_nxt <= BLAKELY;
             end if;
 
-        when MODMUL =>
-            if (counterModMul = 255) then
+        when BLAKELY =>
+            if (blakely_done = '1') then
                 state_nxt <= CALCULATING;
             else 
                 state_nxt <= MODMUL;
-                valid_out <= '0';
-                ready_in <= '0';
             end if;
 
-        when PRINT =>
+        when OUTPUTTING =>
             if (ready_out = '1') then
                 state_nxt <= IDLE;
             else
                 state_nxt <= PRINT;
-                valid_out <= '1';
-                ready_in <= '0';
             end if;
         end case;
     end process;
+
+    -- FSM output control
+    process(state)
+    begin
+        case (state) is
+        when WAITING => 
+            ready_in        <= '1';
+            valid_out       <= '0';
+            blakely_enable  <= '0';
+
+        when CALCULATING =>
+            ready_in        <= '0';
+            valid_out       <= '0';
+            blakely_enable  <= '0';
+
+        when BLAKELY =>
+            ready_in        <= '0';
+            valid_out       <= '0';
+            blakely_enable  <= '1';
+    
+
+        when OUTPUTTING =>
+            ready_in        <= '0';
+            valid_out       <= '1';
+            blakely_enable  <= '0';
+
+        end case;
+    end process;
+
+    -- RSA_done <= (counter = 255);
     
 
 end Behavioral;

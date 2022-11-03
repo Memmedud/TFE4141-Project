@@ -5,5 +5,6 @@ Hva må gjøres:
 
     Design testbenk til hele systemet 
 
-    
+    KAn optimalisere muxer og tetllere i blakely
 
+    Undersøke syntetiserings-options, kanskje noe optimalisering der au

@@ -13,7 +13,7 @@ entity FSM is
         ready_in        : out STD_LOGIC;
         ready_out       : in STD_LOGIC;
 
-        index           : out unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
+        index           : out std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
         
         clk             : in STD_LOGIC;
         rst_n           : in STD_LOGIC
@@ -59,9 +59,9 @@ begin
     end process;
 
     -- Combinatorial datapath
-    process(valid_in, ready_out)
+    process(valid_in, ready_out, counterRSA, counterModMul, state, clk)
     begin
-        index <= counterRSA;
+        index <= (others => '0');--std_logic_vector(counterRSA);
 
         case (state) is
         when IDLE =>
@@ -69,6 +69,8 @@ begin
                 state_nxt <= CALCULATING;
             else 
                 state_nxt <= IDLE;
+                ready_in <= '1';
+                valid_out <= '0';
             end if;
             
         when CALCULATING =>
@@ -77,7 +79,9 @@ begin
             elsif (not(counterRSA = 0)) then
                 state_nxt <= MODMUL;
             else
-                state_nxt <= CALCULATING;    
+                state_nxt <= CALCULATING;
+                ready_in <= '0';    
+                valid_out <= '0';
             end if;
 
         when MODMUL =>
@@ -85,6 +89,8 @@ begin
                 state_nxt <= CALCULATING;
             else 
                 state_nxt <= MODMUL;
+                valid_out <= '0';
+                ready_in <= '0';
             end if;
 
         when PRINT =>
@@ -92,11 +98,11 @@ begin
                 state_nxt <= IDLE;
             else
                 state_nxt <= PRINT;
+                valid_out <= '1';
+                ready_in <= '0';
             end if;
         end case;
     end process;
-
-    ready_in <= (state == IDLE);
-    valid_out <= (state == PRINT);
+    
 
 end Behavioral;

@@ -11,14 +11,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="260981fs"></ZoomEndTime>
-      <Cursor1Time time="40000fs"></Cursor1Time>
+      <ZoomEndTime time="279429fs"></ZoomEndTime>
+      <Cursor1Time time="50000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="272"></NameColumnWidth>
-      <ValueColumnWidth column_width="117"></ValueColumnWidth>
+      <ValueColumnWidth column_width="113"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="46" />
+   <WVObjectSize size="43" />
    <wvobject fp_name="/rsa_accelerator_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -120,16 +120,6 @@
       <obj_property name="ElementShortName">state</obj_property>
       <obj_property name="ObjectShortName">state</obj_property>
    </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_FSM/counterModMul" type="array">
-      <obj_property name="ElementShortName">counterModMul[7:0]</obj_property>
-      <obj_property name="ObjectShortName">counterModMul[7:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_FSM/counterRSA" type="array">
-      <obj_property name="ElementShortName">counterRSA[7:0]</obj_property>
-      <obj_property name="ObjectShortName">counterRSA[7:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/P_r" type="array">
       <obj_property name="ElementShortName">P_r[255:0]</obj_property>
       <obj_property name="ObjectShortName">P_r[255:0]</obj_property>
@@ -146,11 +136,6 @@
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/C_nxt" type="array">
       <obj_property name="ElementShortName">C_nxt[255:0]</obj_property>
       <obj_property name="ObjectShortName">C_nxt[255:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/index" type="array">
-      <obj_property name="ElementShortName">index[7:0]</obj_property>
-      <obj_property name="ObjectShortName">index[7:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_FSM/valid_in" type="logic">
       <obj_property name="ElementShortName">valid_in</obj_property>
@@ -173,10 +158,6 @@
       <obj_property name="ObjectShortName">msgout_data[255:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/bi" type="logic">
-      <obj_property name="ElementShortName">bi</obj_property>
-      <obj_property name="ObjectShortName">bi</obj_property>
-   </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_FSM/write_mes" type="logic">
       <obj_property name="ElementShortName">write_mes</obj_property>
       <obj_property name="ObjectShortName">write_mes</obj_property>
@@ -194,16 +175,6 @@
       <obj_property name="ElementShortName">bi</obj_property>
       <obj_property name="ObjectShortName">bi</obj_property>
    </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_blakely_C/nega_n" type="array">
-      <obj_property name="ElementShortName">nega_n[255:0]</obj_property>
-      <obj_property name="ObjectShortName">nega_n[255:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_blakely_C/nega_2n" type="array">
-      <obj_property name="ElementShortName">nega_2n[255:0]</obj_property>
-      <obj_property name="ObjectShortName">nega_2n[255:0]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
-   </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/key_n" type="array">
       <obj_property name="ElementShortName">key_n[255:0]</obj_property>
       <obj_property name="ObjectShortName">key_n[255:0]</obj_property>
@@ -212,5 +183,17 @@
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/message" type="array">
       <obj_property name="ElementShortName">message[255:0]</obj_property>
       <obj_property name="ObjectShortName">message[255:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/blakely_done" type="logic">
+      <obj_property name="ElementShortName">blakely_done</obj_property>
+      <obj_property name="ObjectShortName">blakely_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_blakely_P/result" type="array">
+      <obj_property name="ElementShortName">result[255:0]</obj_property>
+      <obj_property name="ObjectShortName">result[255:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/blakely_enable" type="logic">
+      <obj_property name="ElementShortName">blakely_enable</obj_property>
+      <obj_property name="ObjectShortName">blakely_enable</obj_property>
    </wvobject>
 </wave_config>

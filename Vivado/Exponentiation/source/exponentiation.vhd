@@ -8,26 +8,23 @@ entity exponentiation is
 		C_block_size : integer := 256
 	);
 	port (
-		-- input control
+		-- clock and reset
+		clk 		: in std_logic;
+		reset_n 	: in std_logic;
+
+		-- control signals
 		valid_in	: in  std_logic;
 		ready_in	: out std_logic;
+		ready_out	: in  std_logic;
+		valid_out	: out std_logic;
 
 		-- input data
 		message 	: in std_logic_VECTOR(C_block_size-1 downto 0);
 		key 		: in std_logic_VECTOR(C_block_size-1 downto 0);
-		nega_n    	: in std_logic_VECTOR(C_block_size-1 downto 0);
-		nega_2n 	: in std_logic_VECTOR(C_block_size-1 downto 0);
-
-		-- ouput control
-		ready_out	: in  std_logic;
-		valid_out	: out std_logic;
-
+		n    	    : in std_logic_VECTOR(C_block_size-1 downto 0);
+		
 		-- output data
-		result 		: out std_logic_VECTOR(C_block_size-1 downto 0);
-
-		-- clock and reset
-		clk 		: in std_logic;
-		reset_n 	: in std_logic
+		result 		: out std_logic_VECTOR(C_block_size-1 downto 0)
 	);
 end exponentiation;
 
@@ -35,10 +32,10 @@ end exponentiation;
 architecture expBehave of exponentiation is
 
 -- Registers
-signal P_r          : std_logic_vector(C_block_size-1 downto 0);
-signal C_r          : std_logic_vector(C_block_size-1 downto 0);
-signal P_nxt        : std_logic_vector(C_block_size-1 downto 0);
-signal C_nxt        : std_logic_vector(C_block_size-1 downto 0);
+signal P_r              : std_logic_vector(C_block_size-1 downto 0);
+signal C_r              : std_logic_vector(C_block_size-1 downto 0);
+signal P_nxt            : std_logic_vector(C_block_size-1 downto 0);
+signal C_nxt            : std_logic_vector(C_block_size-1 downto 0);
 
 -- Blakely signals
 signal result_C     	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
@@ -49,8 +46,8 @@ signal blakely_done_P 	: STD_LOGIC;
 signal blakely_enable	: STD_LOGIC;
 
 -- FSM signals
-signal index        : std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-signal write_mes    : std_logic;
+signal e_index          : STD_LOGIC_VECTOR(integer(ceil(log2(real(C_block_size))))-1 downto 0);
+signal write_mes        : std_logic;
 
 begin   
 	-- Instansiate Two Blakely modules
@@ -60,18 +57,16 @@ begin
 	   	)
 	   	port map (
 	       	-- Inputs
-	       	clk 				=> clk,
+	       	clk 			=> clk,
 	       	rst_n 			=> reset_n,
 	       	a 				=> C_r,
-	       	b 				=> b,
-	       	nega_n 			=> nega_n,
-	       	nega_2n 		=> nega_2n,
+	       	b 				=> P_r,
+	       	n 				=> n,
 		   	blakely_enable 	=> blakely_enable,
 
 	       	-- Outputs
 	       	result 			=> result_C,
 			blakely_done	=> blakely_done_C
-
 	   );
 	   
 	in_blakely_P : entity work.blakely
@@ -83,35 +78,35 @@ begin
 	        clk 			=> clk,
 	        rst_n 			=> reset_n,
 	        a 				=> P_r,
-	        b  				=> b,
-	        nega_n 			=> nega_n,
-	        nega_2n 		=> nega_2n,
+	        b  				=> P_r,
+	        n 				=> n,
 			blakely_enable  => blakely_enable,
 	        
 			-- Outputs
 	        result 			=> result_P,
 			blakely_done 	=> blakely_done_P
 	   );
-	
-	
-	-- Instansiate FSM
-    /*in_FSM : entity work.FSM
-        generic map (
-            C_block_size => C_block_size
-        )
-        port map (
-            -- Inputs
-            valid_in 	=> valid_in,
-			ready_out 	=> ready_out,
-			clk 		=> clk,
-			rst_n 		=> reset_n,
-            -- Outputs
-			valid_out 	=> valid_out,
-			ready_in 	=> ready_in,
-			index 		=> index
-        );*/
-    
-    
+
+	in_FSM : entity work.FSM
+			generic map(
+				C_block_size => C_block_size
+			)
+			port map (
+				-- Inputs
+				clk				=> clk,
+				rst_n			=> reset_n,
+				valid_in		=> valid_in,
+				ready_out		=> ready_out,
+				blakely_done	=> blakely_done,
+
+				-- Outputs
+				valid_out		=> valid_out,
+				ready_in		=> ready_in,
+				blakely_enable	=> blakely_enable,
+				e_index			=> e_index,
+				write_mes       => write_mes
+			);
+	 
     -- Sequential datapath
     process(clk, reset_n)
     begin
@@ -125,13 +120,13 @@ begin
     end process;
     
     -- Combinatorial datapath
-    process(index, key, result_C, C_r, write_mes, valid_in)
+    process(e_index, key, result_C, C_r, write_mes, valid_in, message, ready_in)
     begin
-        if (write_mes = '1' and valid_in = '1') then
+        if (ready_in = '1' and valid_in = '1') then
             C_nxt <= (0 => '1', others => '0');
             P_nxt <= message;
         else
-            if(key(to_integer(unsigned(index))) = '1') then
+            if(key(to_integer(unsigned(e_index))) = '1') then
                 C_nxt <= result_C;
                 P_nxt <= result_P;
             else 
@@ -143,5 +138,5 @@ begin
    
     result <= C_r;
 	blakely_done <= blakely_done_C and blakely_done_P;
-   
+    
 end expBehave;
