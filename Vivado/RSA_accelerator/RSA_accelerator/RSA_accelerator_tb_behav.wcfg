@@ -11,14 +11,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="279429fs"></ZoomEndTime>
-      <Cursor1Time time="50000fs"></Cursor1Time>
+      <ZoomEndTime time="660540001fs"></ZoomEndTime>
+      <Cursor1Time time="5308251fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="272"></NameColumnWidth>
-      <ValueColumnWidth column_width="113"></ValueColumnWidth>
+      <ValueColumnWidth column_width="97"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="43" />
+   <WVObjectSize size="51" />
    <wvobject fp_name="/rsa_accelerator_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -171,14 +171,14 @@
       <obj_property name="ObjectShortName">a[255:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_blakely_C/bi" type="logic">
-      <obj_property name="ElementShortName">bi</obj_property>
-      <obj_property name="ObjectShortName">bi</obj_property>
-   </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/key_n" type="array">
       <obj_property name="ElementShortName">key_n[255:0]</obj_property>
       <obj_property name="ObjectShortName">key_n[255:0]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/key" type="array">
+      <obj_property name="ElementShortName">key[255:0]</obj_property>
+      <obj_property name="ObjectShortName">key[255:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/message" type="array">
       <obj_property name="ElementShortName">message[255:0]</obj_property>
@@ -188,12 +188,44 @@
       <obj_property name="ElementShortName">blakely_done</obj_property>
       <obj_property name="ObjectShortName">blakely_done</obj_property>
    </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/blakely_enable" type="logic">
+      <obj_property name="ElementShortName">blakely_enable</obj_property>
+      <obj_property name="ObjectShortName">blakely_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/result_C" type="array">
+      <obj_property name="ElementShortName">result_C[255:0]</obj_property>
+      <obj_property name="ObjectShortName">result_C[255:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/result_P" type="array">
+      <obj_property name="ElementShortName">result_P[255:0]</obj_property>
+      <obj_property name="ObjectShortName">result_P[255:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_blakely_P/a" type="array">
+      <obj_property name="ElementShortName">a[255:0]</obj_property>
+      <obj_property name="ObjectShortName">a[255:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_blakely_P/b" type="array">
+      <obj_property name="ElementShortName">b[255:0]</obj_property>
+      <obj_property name="ObjectShortName">b[255:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_blakely_P/result" type="array">
       <obj_property name="ElementShortName">result[255:0]</obj_property>
       <obj_property name="ObjectShortName">result[255:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/blakely_enable" type="logic">
-      <obj_property name="ElementShortName">blakely_enable</obj_property>
-      <obj_property name="ObjectShortName">blakely_enable</obj_property>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_blakely_P/result_nxt" type="array">
+      <obj_property name="ElementShortName">result_nxt[255:0]</obj_property>
+      <obj_property name="ObjectShortName">result_nxt[255:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/in_blakely_P/result" type="array">
+      <obj_property name="ElementShortName">result[255:0]</obj_property>
+      <obj_property name="ObjectShortName">result[255:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/e_i" type="logic">
+      <obj_property name="ElementShortName">e_i</obj_property>
+      <obj_property name="ObjectShortName">e_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/i_exponentiation/e_index" type="array">
+      <obj_property name="ElementShortName">e_index[7:0]</obj_property>
+      <obj_property name="ObjectShortName">e_index[7:0]</obj_property>
    </wvobject>
 </wave_config>

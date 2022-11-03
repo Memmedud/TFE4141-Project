@@ -120,5 +120,7 @@ begin
 
         end case;
     end process;
+    
+    e_index <= std_logic_vector(counter);
   
 end Behavioral;

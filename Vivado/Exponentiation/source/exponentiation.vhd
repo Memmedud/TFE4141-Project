@@ -44,6 +44,7 @@ signal blakely_done 	: STD_LOGIC;
 signal blakely_done_C	: STD_LOGIC;
 signal blakely_done_P 	: STD_LOGIC;
 signal blakely_enable	: STD_LOGIC;
+signal e_i              : STD_LOGIC;
 
 -- FSM signals
 signal e_index          : STD_LOGIC_VECTOR(integer(ceil(log2(real(C_block_size))))-1 downto 0);
@@ -126,17 +127,23 @@ begin
             C_nxt <= (0 => '1', others => '0');
             P_nxt <= message;
         else
-            if(key(to_integer(unsigned(e_index))) = '1') then
-                C_nxt <= result_C;
-                P_nxt <= result_P;
-            else 
+            if (blakely_done = '1') then
+                if(e_i = '1') then
+                    C_nxt <= result_C;
+                    P_nxt <= result_P;
+                else 
+                    C_nxt <= C_r;
+                    P_nxt <= result_P;
+                end if;
+            else
                 C_nxt <= C_r;
-                P_nxt <= result_P;
+                P_nxt <= P_r;
             end if;
         end if;
     end process;
    
     result <= C_r;
 	blakely_done <= blakely_done_C and blakely_done_P;
+	e_i <= (key(to_integer(unsigned(e_index))));
     
 end expBehave;

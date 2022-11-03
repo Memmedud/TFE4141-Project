@@ -6,10 +6,10 @@ use ieee.numeric_std.all;
 library std;
 use std.textio.all;
 
-entity exponentiation_tb is 
-end entity exponentiation_tb;
+entity blakely_tb is 
+end entity blakely_tb;
 
-architecture blakely_tb_behave of exponentiation_tb is
+architecture blakely_tb_behave of blakely_tb is
 
     constant C_block_size   : integer := 256;
     
