@@ -59,7 +59,7 @@ begin
                 counter <= std_logic_vector(unsigned(counter) - 1);
                 blakely_done <= blakely_done_nxt;
             else
-                result_r <= result_r;
+                result_r <= (others => '0');
                 counter <= (others => '1');
                 blakely_done <= '0';
             end if;
