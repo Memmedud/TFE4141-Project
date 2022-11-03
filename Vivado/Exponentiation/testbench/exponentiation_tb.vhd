@@ -23,10 +23,10 @@ architecture blakely_tb_behave of exponentiation_tb is
     signal ready_in         : std_logic;
     signal ready_out        : std_logic;
     signal valid_out        : std_logic;
-    signal message          : in std_logic_VECTOR(C_block_size-1 downto 0);
-    signal key              : in std_logic_VECTOR(C_block_size-1 downto 0);
-    signal n                : in std_logic_VECTOR(C_block_size-1 downto 0);
-    signal result           : in std_logic_VECTOR(C_block_size-1 downto 0);
+    signal message          : std_logic_vector(C_block_size-1 downto 0);
+    signal key              : std_logic_vector(C_block_size-1 downto 0);
+    signal n                : std_logic_vector(C_block_size-1 downto 0);
+    signal result           : std_logic_vector(C_block_size-1 downto 0);
 
     -- Control signals
     signal expected : std_logic_vector(C_block_size-1 downto 0);    

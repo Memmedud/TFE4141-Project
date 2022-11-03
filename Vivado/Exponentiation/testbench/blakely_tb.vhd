@@ -150,7 +150,7 @@ begin
             report "********************************************************************************";
             report "ALL TESTS FINISHED SUCCESSFULLY";
             report "********************************************************************************";
-        wait;
+        assert false report "Test: OK" severity failure;
     end process;
 	
 	-- clock generation 
