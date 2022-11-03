@@ -48,7 +48,6 @@ signal e_i              : STD_LOGIC;
 
 -- FSM signals
 signal e_index          : STD_LOGIC_VECTOR(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-signal write_mes        : std_logic;
 
 begin   
 	-- Instansiate Two Blakely modules
@@ -104,8 +103,7 @@ begin
 				valid_out		=> valid_out,
 				ready_in		=> ready_in,
 				blakely_enable	=> blakely_enable,
-				e_index			=> e_index,
-				write_mes       => write_mes
+				e_index			=> e_index
 			);
 	 
     -- Sequential datapath
@@ -121,7 +119,7 @@ begin
     end process;
     
     -- Combinatorial datapath
-    process(e_index, key, result_C, C_r, write_mes, valid_in, message, ready_in)
+    process(e_index, key, result_C, C_r, valid_in, message, ready_in)
     begin
         if (ready_in = '1' and valid_in = '1') then
             C_nxt <= (0 => '1', others => '0');

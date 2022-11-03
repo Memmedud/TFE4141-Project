@@ -19,8 +19,7 @@ entity FSM is
         blakely_done    : in  std_logic;
         blakely_enable  : out std_logic; 
 
-        e_index         : out std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-        write_mes       : out std_logic
+        e_index         : out std_logic_vector(integer(ceil(log2(real(C_block_size))))-1 downto 0)
     );
 end FSM;
 

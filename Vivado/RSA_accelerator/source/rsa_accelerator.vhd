@@ -224,7 +224,6 @@ u_rsa_core : entity work.rsa_core
 		key_e_d                => key_e_d,
 		key_n                  => key_n,
 		rsa_status             => rsa_status
-
 	);
 
 end rtl;
