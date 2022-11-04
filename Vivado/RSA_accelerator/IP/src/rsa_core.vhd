@@ -13,6 +13,7 @@
 --   RSA encryption core, it implements the function
 --   C = M**key_e mod key_n.
 --------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -65,8 +66,7 @@ end rsa_core;
 
 architecture rtl of rsa_core is
 
-signal nega_n       : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
-signal nega_2n       : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+    signal last_message : std_logic; 
 
 begin
 	i_exponentiation : entity work.exponentiation
@@ -81,15 +81,25 @@ begin
 			ready_out => msgout_ready,
 			valid_out => msgout_valid,
 			result    => msgout_data ,
-			nega_n    => nega_n      ,
-			nega_2n   => nega_2n     ,
+			n         => key_n       ,
 			clk       => clk         ,
 			reset_n   => reset_n
 		);
 
-	msgout_last  <= '0';
+	msgout_last  <= last_message and msgout_valid;
 	rsa_status   <= (others => '0');
-	nega_n <= (others => '0');--std_logic_vector(-signed(key_n));
-	nega_2n <= std_logic_vector(-signed(shift_left(unsigned(key_n), 1)));
+	
+	process(clk, reset_n)
+	begin
+	   if (reset_n = '0') then
+	       last_message <= '0';
+	   else
+	       if (msgin_valid = '1' and msgin_ready = '1') then
+	           last_message <= msgin_last;
+	       else
+	           last_message <= last_message;
+	       end if;
+	   end if;
+	end process;
 	
 end rtl;

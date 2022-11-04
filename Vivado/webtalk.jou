@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Webtalk v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Fri Nov  4 13:07:12 2022
+# Process ID: 22572
+# Current directory: C:/Users/Maths/Desktop/TFE4141/Vivado
+# Command line: wbtcv.exe -mode batch -source C:/Users/Maths/Desktop/TFE4141/Vivado/RSA_soc/RSA_soc/RSA_soc.hw/webtalk/labtool_webtalk.tcl -notrace
+# Log file: C:/Users/Maths/Desktop/TFE4141/Vivado/webtalk.log
+# Journal file: C:/Users/Maths/Desktop/TFE4141/Vivado\webtalk.jou
+#-----------------------------------------------------------
+source C:/Users/Maths/Desktop/TFE4141/Vivado/RSA_soc/RSA_soc/RSA_soc.hw/webtalk/labtool_webtalk.tcl -notrace
