@@ -6,10 +6,10 @@ use ieee.numeric_std.all;
 library std;
 use std.textio.all;
 
-entity blakely_tb is 
-end entity blakely_tb;
+entity exponentiation_tb is 
+end entity exponentiation_tb;
 
-architecture blakely_tb_behave of blakely_tb is
+architecture blakely_tb_behave of exponentiation_tb is
 
     constant C_block_size   : integer := 256;
     
@@ -18,14 +18,16 @@ architecture blakely_tb_behave of blakely_tb is
     signal clk              : STD_LOGIC := '0';
     signal rst_n            : STD_LOGIC := '0';
 
-    -- Blakely signals
-    signal a                : STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-    signal b                : STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-    signal n                : STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-    signal blakely_enable   : STD_LOGIC := '0';
-    signal result           : STD_LOGIC_VECTOR (C_block_size-1 downto 0);
-    signal blakely_done     : STD_LOGIC;
-    
+    -- Exponentiation signals
+    signal valid_in         : std_logic;
+    signal ready_in         : std_logic;
+    signal ready_out        : std_logic;
+    signal valid_out        : std_logic;
+    signal message          : std_logic_vector(C_block_size-1 downto 0);
+    signal key              : std_logic_vector(C_block_size-1 downto 0);
+    signal n                : std_logic_vector(C_block_size-1 downto 0);
+    signal result           : std_logic_vector(C_block_size-1 downto 0);
+
     -- Control signals
     signal expected : std_logic_vector(C_block_size-1 downto 0);    
     
@@ -99,6 +101,7 @@ begin
 	-- Testbench procedure
     process
     begin
+      
         report "********************************************************************************";
         report "STARTING FIRST TESTCASE";
         report "********************************************************************************";
@@ -131,9 +134,8 @@ begin
         a <= x"0a23232323232323232323232323232323232323232323232323232323232323"; --str_to_stdvec("85ee722363960779206a2b37cc8b64b5fc12a934473fa0204bbaaf714bc90c01");
         b <= x"0a23232323232323232323232323232323232323232323232323232323232323"; --str_to_stdvec("85ee722363960779206a2b37cc8b64b5fc12a934473fa0204bbaaf714bc90c01");
         expected <= x"24931802b9ead447563ec7f0f3d613270a5dd5f3d3df1457b9857de14da1a750"; --str_to_stdvec("80291d6bcaeec4accc8cadf9dcc350b3c13dad526cec43bdb3d72f2d4628f697");
-        
+           
         -- Waiting for different stuff
-        wait until rst_n = '1';
         wait until rising_edge(clk);
         blakely_enable <= '1';
         wait until blakely_done = '1';
@@ -150,7 +152,7 @@ begin
             report "********************************************************************************";
             report "ALL TESTS FINISHED SUCCESSFULLY";
             report "********************************************************************************";
-        wait;
+        
     end process;
 	
 	-- clock generation 
@@ -182,7 +184,7 @@ begin
 
         a               => a,
         b               => b,
-        n               => std_logic_vector(n),
+        n               => n,
         blakely_enable  => blakely_enable,
 
         result          => result,

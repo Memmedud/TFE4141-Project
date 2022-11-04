@@ -18,32 +18,28 @@ def ModMul(A, B, n, temp):
     for bi in B:
         R = (R << 1)
         if (bi): # bi is either 1 or 0
-            print("bi = 1")
             R += A
         if R >= n:
-            print("R-n")
             R -= n
         if R >= n:
-            print("R-n")
             R -= n
-        if (temp):
-            print(hex(R))
     if temp:
         print("Done with ModMul")
     return R
 
 def RSA(M, e, n):
-    print(hex(M))
     temp = False
     C = 1
     P = M
     for i in range(0, e.bit_length()):
         if (check_bit_num(e,i) == 1):
+            print("e[i] = 1")
             C = ModMul(P, C, n, temp)
-        temp = True
+        temp = False
         P = ModMul(P, P, n, temp)
         temp = False
-        print(hex(C))
+        print("C: ", hex(C))
+        print("P: ", hex(P))
     print("Result: ")
     return C
 
@@ -68,7 +64,7 @@ d = 0x0cea1651ef44be1f1f1476b7539bed10d73e3aac782bd9999a1e5a790932bfe9
 #print(hex(RSA(msg,d,n)))
 #print(hex(RSA(RSA(M, e, n), d, n)))
 
-print(hex(ModMul(M, M, n, True)))
+print(hex(RSA(M, e, n)))
 #print(hex(+M+(-2*n)))
 #print(hex(((0x9278ff566b3a2a55f2c5e4f4be4b4275a035c6e0d5663ec7d850130a1797bae7)<<1)+M))
 #print(hex(((0x9278ff566b3a2a55f2c5e4f4be4b4275a035c6e0d5663ec7d850130a1797bae7)<<1)+M-n))
@@ -86,4 +82,3 @@ print(hex(ModMul(M, M, n, True)))
 
 #M in vivado: 1a77e44c6c960ee940654dce331d62daf38459c22ecf50402dd55fe82d390308
 #n in vivado: 9994a8ec5b6a616e8ac1a751003b41840411f3e059d391bb2390b6e6f1ffe61b
-

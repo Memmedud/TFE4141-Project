@@ -38,7 +38,7 @@ begin
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
-            state <= IDLE;
+            state <= WAITING;
         elsif (rising_edge(clk)) then
             state <= state_nxt;
         end if;
@@ -80,14 +80,14 @@ begin
             if (blakely_done = '1') then
                 state_nxt <= CALCULATING;
             else 
-                state_nxt <= MODMUL;
+                state_nxt <= BLAKELY;
             end if;
 
         when OUTPUTTING =>
             if (ready_out = '1') then
-                state_nxt <= IDLE;
+                state_nxt <= WAITING;
             else
-                state_nxt <= PRINT;
+                state_nxt <= OUTPUTTING;
             end if;
         end case;
     end process;
@@ -119,8 +119,7 @@ begin
 
         end case;
     end process;
-
-    -- RSA_done <= (counter = 255);
     
-
+    e_index <= std_logic_vector(counter);
+  
 end Behavioral;

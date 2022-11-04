@@ -26,7 +26,7 @@ end blakely;
 
 architecture rtl of blakely is
 
-signal bi               : STD_LOGIC;
+signal b_i               : STD_LOGIC;
 signal n_shifted        : STD_LOGIC_VECTOR(C_block_size downto 0);
 
 signal result_nxt       : STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
@@ -59,7 +59,7 @@ begin
                 counter <= std_logic_vector(unsigned(counter) - 1);
                 blakely_done <= blakely_done_nxt;
             else
-                result_r <= result_r;
+                result_r <= (others => '0');
                 counter <= (others => '1');
                 blakely_done <= '0';
             end if;
@@ -67,14 +67,14 @@ begin
     end process;
 
     -- Combinatorial Blakely algorithm
-    process(a, bi, n, n_shifted, result_r, result_nxt, result_bitshift, sum_a, mux_bi, sum_n, sum_2n, underflow1, underflow2, mux_bi_underflow)
+    process(a, b_i, n, n_shifted, result_r, result_nxt, result_bitshift, sum_a, mux_bi, sum_n, sum_2n, underflow1, underflow2, mux_bi_underflow)
     begin
         -- Calculate some intermediate values
         result_bitshift <= STD_LOGIC_VECTOR(shift_left(resize(signed(result_r), C_block_size+1), 1));
         sum_a <= STD_LOGIC_VECTOR(unsigned(result_bitshift) + resize(unsigned(a), C_block_size+1));
         
         -- B[i] selection mux
-        if(bi = '1') then
+        if(b_i = '1') then
             mux_bi <= sum_a;
         else
             mux_bi <= result_bitshift;
@@ -111,6 +111,6 @@ begin
     
     result <= result_r;
     n_shifted <= STD_LOGIC_VECTOR(shift_left(resize(unsigned(n), C_block_size+1), 1));
-    bi <= b(to_integer(unsigned(counter)));
+    b_i <= b(to_integer(unsigned(counter)));
     
 end rtl;

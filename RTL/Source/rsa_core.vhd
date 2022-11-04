@@ -10,15 +10,14 @@
 --                public domain (UNLICENSE)
 --------------------------------------------------------------------------------
 -- Purpose:
---   RSA encryption core template. This core currently computes
---   C = M xor key_n
---
---   Replace/change this module so that it implements the function
+--   RSA encryption core, it implements the function
 --   C = M**key_e mod key_n.
 --------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
 entity rsa_core is
 	generic (
 		-- Users to add parameters here
@@ -35,7 +34,7 @@ entity rsa_core is
 		-- Slave msgin interface
 		-----------------------------------------------------------------------------
 		-- Message that will be sent out is valid
-		msgin_valid             : in std_logic;
+		msgin_valid             :  in std_logic;
 		-- Slave ready to accept a new message
 		msgin_ready             : out std_logic;
 		-- Message that will be sent out of the rsa_msgin module
@@ -67,6 +66,8 @@ end rsa_core;
 
 architecture rtl of rsa_core is
 
+    signal last_message : std_logic; 
+
 begin
 	i_exponentiation : entity work.exponentiation
 		generic map (
@@ -80,11 +81,25 @@ begin
 			ready_out => msgout_ready,
 			valid_out => msgout_valid,
 			result    => msgout_data ,
-			modulus   => key_n       ,
+			n         => key_n       ,
 			clk       => clk         ,
 			reset_n   => reset_n
 		);
 
-	msgout_last  <= msgin_last;
+	msgout_last  <= last_message and msgout_valid;
 	rsa_status   <= (others => '0');
+	
+	process(clk, reset_n)
+	begin
+	   if (reset_n = '0') then
+	       last_message <= '0';
+	   else
+	       if (msgin_valid = '1' and msgin_ready = '1') then
+	           last_message <= msgin_last;
+	       else
+	           last_message <= last_message;
+	       end if;
+	   end if;
+	end process;
+	
 end rtl;
