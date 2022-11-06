@@ -119,7 +119,7 @@ begin
     end process;
     
     -- Combinatorial datapath
-    process(e_index, key, result_C, C_r, valid_in, message, ready_in)
+    process(e_index, key, result_C, C_r, valid_in, message, ready_in, blakely_done, result_P, P_r)
     begin
         if (ready_in = '1' and valid_in = '1') then
             C_nxt <= (0 => '1', others => '0');

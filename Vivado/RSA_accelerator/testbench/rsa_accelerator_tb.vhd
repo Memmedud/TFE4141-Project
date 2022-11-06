@@ -80,9 +80,9 @@ architecture struct of rsa_accelerator_tb is
 	-----------------------------------------------------------------------------
 	procedure open_tc_inp(testcase_id: in integer) is
 	begin
-		if(testcase_id=0)then
+		--if(testcase_id=0)then
 			file_open(tc_inp, C_TESTCASE_FOLDER & ".inp_messages.hex_pt0_in.txt", read_mode);
-		elsif(testcase_id=1)then
+		/*elsif(testcase_id=1)then
 			file_open(tc_inp, C_TESTCASE_FOLDER & ".inp_messages.hex_pt1_in.txt", read_mode);
 		elsif(testcase_id=2)then
 			file_open(tc_inp, C_TESTCASE_FOLDER & ".inp_messages.hex_pt2_in.txt", read_mode);
@@ -92,7 +92,7 @@ architecture struct of rsa_accelerator_tb is
 			file_open(tc_inp, C_TESTCASE_FOLDER & ".inp_messages.hex_ct4_in.txt", read_mode);
 		elsif(testcase_id=5)then
 			file_open(tc_inp, C_TESTCASE_FOLDER & ".inp_messages.hex_ct5_in.txt", read_mode);
-		end if;
+		end if;*/
 	end open_tc_inp;
 
 	-----------------------------------------------------------------------------
@@ -100,9 +100,9 @@ architecture struct of rsa_accelerator_tb is
 	-----------------------------------------------------------------------------
 	procedure open_tc_otp(testcase_id: in integer) is
 	begin
-		if(testcase_id=0)then
+		--if(testcase_id=0)then
 			file_open(tc_otp, C_TESTCASE_FOLDER & ".otp_messages.hex_ct0_out.txt", read_mode);
-		elsif(testcase_id=1)then
+		/*elsif(testcase_id=1)then
 			file_open(tc_otp, C_TESTCASE_FOLDER & ".otp_messages.hex_ct1_out.txt", read_mode);
 		elsif(testcase_id=2)then
 			file_open(tc_otp, C_TESTCASE_FOLDER & ".otp_messages.hex_ct2_out.txt", read_mode);
@@ -112,7 +112,7 @@ architecture struct of rsa_accelerator_tb is
 			file_open(tc_otp, C_TESTCASE_FOLDER & ".otp_messages.hex_pt4_out.txt", read_mode);
 		elsif(testcase_id=5)then
 			file_open(tc_otp, C_TESTCASE_FOLDER & ".otp_messages.hex_pt5_out.txt", read_mode);
-		end if;
+		end if;*/
 	end open_tc_otp;
 
 	-----------------------------------------------------------------------------
@@ -372,7 +372,8 @@ begin
 
 				-- Testcase is finished
 				when e_TC_COMPLETED =>
-					if(test_case_id>=5)then
+					--if(test_case_id>=5)then
+					if(test_case_id>=0)then
 						tc_ctrl_state <= e_TC_ALL_TESTS_COMPLETED;
 					else
 						tc_ctrl_state <= e_TC_START_TC;
