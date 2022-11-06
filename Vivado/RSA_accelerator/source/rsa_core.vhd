@@ -23,7 +23,7 @@ entity rsa_core is
 		-- Users to add parameters here
 		C_BLOCK_SIZE          : integer := 256;
 		-- Number of Exponentiation cores to instanciate
-		Num_Cores             : integer := 2
+		Num_Cores             : integer := 5
 	);
 	port (
 		-----------------------------------------------------------------------------
@@ -74,15 +74,16 @@ architecture rtl of rsa_core is
 
     signal last_message             : std_logic;
     
+    -- Vector signals connecting to each core
     signal valid_in_vector          : std_logic_vector(Num_Cores-1 downto 0);
     signal valid_out_vector         : std_logic_vector(Num_Cores-1 downto 0);
     signal ready_in_vector          : std_logic_vector(Num_Cores-1 downto 0);
     signal ready_out_vector         : std_logic_vector(Num_Cores-1 downto 0);
-
-    signal ready_in_internal        : std_logic_vector(Num_Cores-1 downto 0);  
     
+    -- Internal helper signals
+    signal ready_in_internal        : std_logic_vector(Num_Cores-1 downto 0);
+    signal valid_out_internal       : std_logic_vector(Num_Cores-1 downto 0);  
     
-    signal test : std_logic;   
 begin
     
     -- Generates Num_Cores number of RSA cores
@@ -109,29 +110,59 @@ begin
 		);	   
     end generate Cores;
     
+    
     -- Other minor logic
-	msgout_last  <= last_message and msgout_valid;     -- This is probably wrong
+	msgout_last <= '0';--<= last_message and msgout_valid;     -- This is probably wrong
 	rsa_status   <= (others => '0');                   -- Maybe something interesting to do with this?
 	msgin_ready <= (or ready_in_vector);
-	--ready_in_vector(0) <= '0';
+	msgout_valid <= (or valid_out_vector);	
 	
 	
-	-- Generate internal ready_in signals
+	-- Generate internal ready_in and valid_out signals
 	process(ready_in_vector, ready_in_internal)
 	begin
 	   ready_in_internal(0) <= '0';
+	   valid_out_internal(0) <= '0';
 	   for i in 0 to Num_Cores-2 loop
 	       ready_in_internal(i+1) <= ready_in_vector(i) or ready_in_internal(i);
+	       valid_out_internal(i+1) <= valid_out_vector(i) or valid_out_internal(i);
 	   end loop;
 	end process;
 	
-	process(ready_in_vector, ready_in_internal)
+	
+	-- Generate internal valid_in and ready_out signals
+	process(ready_in_vector, ready_in_internal, msgin_valid, msgout_valid, valid_out_internal, valid_out_vector, msgout_ready)
 	begin
 	   for i in 0 to Num_Cores-1 loop
-	       valid_in_vector(i) <= (not ready_in_internal(i)) and ready_in_vector(i) and test;
+	       valid_in_vector(i) <= (not ready_in_internal(i)) and ready_in_vector(i) and msgin_valid;
+	       ready_out_vector(i) <= (not valid_out_internal(i)) and valid_out_vector(i) and msgout_ready;
 	   end loop;
-	end process;	
+	end process;
 	
+	
+	-- Drive the correct output through the mux
+	process(ready_out_vector, msgout_vector)
+	begin
+	   for i in 0 to Num_Cores-1 loop
+	       if (ready_out_vector(i) = '1') then
+	           msgout_data <= msgout_vector(i);
+	       else
+	           msgout_data <= (others => '0');
+	       end if;
+	   end loop;
+	end process;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	-- This is maybe useless
 	process(clk, reset_n)
 	begin
 	   if (reset_n = '0') then
@@ -144,7 +175,5 @@ begin
 	       end if;
 	   end if;
 	end process;
-	
-	test <= msgin_valid;
 	
 end rtl;

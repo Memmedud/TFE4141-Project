@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="508394fs"></ZoomEndTime>
-      <Cursor1Time time="179500fs"></Cursor1Time>
+      <ZoomStartTime time="660171200fs"></ZoomStartTime>
+      <ZoomEndTime time="660614801fs"></ZoomEndTime>
+      <Cursor1Time time="660535400fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="272"></NameColumnWidth>
-      <ValueColumnWidth column_width="81"></ValueColumnWidth>
+      <ValueColumnWidth column_width="61"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="32" />
+   <WVObjectSize size="31" />
    <wvobject fp_name="/rsa_accelerator_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -116,44 +116,39 @@
       <obj_property name="ElementShortName">C_TESTCASE_FOLDER[1:10]</obj_property>
       <obj_property name="ObjectShortName">C_TESTCASE_FOLDER[1:10]</obj_property>
    </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/msgout_data" type="array">
-      <obj_property name="ElementShortName">msgout_data[255:0]</obj_property>
-      <obj_property name="ObjectShortName">msgout_data[255:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/key_n" type="array">
       <obj_property name="ElementShortName">key_n[255:0]</obj_property>
       <obj_property name="ObjectShortName">key_n[255:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/msgout_data" type="array">
+      <obj_property name="ElementShortName">msgout_data[255:0]</obj_property>
+      <obj_property name="ObjectShortName">msgout_data[255:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/msgout_vector" type="array">
-      <obj_property name="ElementShortName">msgout_vector[0:1][255:0]</obj_property>
-      <obj_property name="ObjectShortName">msgout_vector[0:1][255:0]</obj_property>
+      <obj_property name="ElementShortName">msgout_vector[0:3][255:0]</obj_property>
+      <obj_property name="ObjectShortName">msgout_vector[0:3][255:0]</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/valid_in_vector" type="array">
-      <obj_property name="ElementShortName">valid_in_vector[1:0]</obj_property>
-      <obj_property name="ObjectShortName">valid_in_vector[1:0]</obj_property>
+      <obj_property name="ElementShortName">valid_in_vector[3:0]</obj_property>
+      <obj_property name="ObjectShortName">valid_in_vector[3:0]</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/valid_out_vector" type="array">
-      <obj_property name="ElementShortName">valid_out_vector[1:0]</obj_property>
-      <obj_property name="ObjectShortName">valid_out_vector[1:0]</obj_property>
+      <obj_property name="ElementShortName">valid_out_vector[3:0]</obj_property>
+      <obj_property name="ObjectShortName">valid_out_vector[3:0]</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/ready_in_vector" type="array">
-      <obj_property name="ElementShortName">ready_in_vector[1:0]</obj_property>
-      <obj_property name="ObjectShortName">ready_in_vector[1:0]</obj_property>
+      <obj_property name="ElementShortName">ready_in_vector[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ready_in_vector[3:0]</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/ready_out_vector" type="array">
-      <obj_property name="ElementShortName">ready_out_vector[1:0]</obj_property>
-      <obj_property name="ObjectShortName">ready_out_vector[1:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/ready_in_internal" type="array">
-      <obj_property name="ElementShortName">ready_in_internal[2:0]</obj_property>
-      <obj_property name="ObjectShortName">ready_in_internal[2:0]</obj_property>
+      <obj_property name="ElementShortName">ready_out_vector[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ready_out_vector[3:0]</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>
