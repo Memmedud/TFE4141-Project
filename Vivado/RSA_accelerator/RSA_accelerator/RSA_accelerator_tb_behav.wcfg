@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="660173969fs"></ZoomStartTime>
-      <ZoomEndTime time="660661207fs"></ZoomEndTime>
-      <Cursor1Time time="660574372fs"></Cursor1Time>
+      <ZoomStartTime time="660088965fs"></ZoomStartTime>
+      <ZoomEndTime time="660678207fs"></ZoomEndTime>
+      <Cursor1Time time="660576740fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="271"></NameColumnWidth>
+      <NameColumnWidth column_width="263"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="31" />
+   <WVObjectSize size="33" />
    <wvobject fp_name="/rsa_accelerator_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -149,6 +149,16 @@
    <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/ready_out_vector" type="array">
       <obj_property name="ElementShortName">ready_out_vector[4:0]</obj_property>
       <obj_property name="ObjectShortName">ready_out_vector[4:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/msgout_last_vector" type="array">
+      <obj_property name="ElementShortName">msgout_last_vector[4:0]</obj_property>
+      <obj_property name="ObjectShortName">msgout_last_vector[4:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/rsa_accelerator_tb/u_rsa_core/msg_last_vector" type="array">
+      <obj_property name="ElementShortName">msg_last_vector[4:0]</obj_property>
+      <obj_property name="ObjectShortName">msg_last_vector[4:0]</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>

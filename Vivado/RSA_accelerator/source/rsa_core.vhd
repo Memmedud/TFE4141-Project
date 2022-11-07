@@ -23,7 +23,7 @@ entity rsa_core is
 		-- Users to add parameters here
 		C_BLOCK_SIZE          : integer := 256;
 		-- Number of Exponentiation cores to instanciate
-		Num_Cores             : integer := 5
+		Num_Cores             : integer := 10
 	);
 	port (
 		-----------------------------------------------------------------------------
@@ -79,6 +79,8 @@ architecture rtl of rsa_core is
     signal valid_out_vector         : std_logic_vector(Num_Cores-1 downto 0);
     signal ready_in_vector          : std_logic_vector(Num_Cores-1 downto 0);
     signal ready_out_vector         : std_logic_vector(Num_Cores-1 downto 0);
+    signal msg_last_vector          : std_logic_vector(Num_Cores-1 downto 0);
+    signal msgout_last_vector       : std_logic_vector(Num_Cores-1 downto 0);
     
     -- Internal helper signals
     signal ready_in_internal        : std_logic_vector(Num_Cores-1 downto 0);
@@ -95,31 +97,33 @@ begin
 		)
 		port map (
 		    -- Signals equal for all instanciations			
-			clk       => clk         ,
-			reset_n   => reset_n     ,
-			n         => key_n       ,
-			key       => key_e_d     ,
-			message   => msgin_data  ,
+			clk          => clk         ,
+			reset_n      => reset_n     ,
+			n            => key_n       ,
+			key          => key_e_d     ,
+			message      => msgin_data  ,
+			msgin_last   => msgin_last  ,
 			
 			-- Individual signals
-			valid_in  => valid_in_vector(i) ,
-			ready_in  => ready_in_vector(i) ,
-			ready_out => ready_out_vector(i),
-			valid_out => valid_out_vector(i),
-			result    => msgout_vector(i) 
+			valid_in     => valid_in_vector(i)   ,
+			ready_in     => ready_in_vector(i)   ,
+			ready_out    => ready_out_vector(i)  ,
+			valid_out    => valid_out_vector(i)  ,
+			msgout_last  => msg_last_vector(i),
+			result       => msgout_vector(i) 
 		);	   
     end generate Cores;
     
     
     -- Other minor logic
-	msgout_last <= '0';--<= last_message and msgout_valid;     -- This is probably wrong
-	rsa_status   <= (others => '0');                           -- Maybe something interesting to do with this?
-	msgin_ready <= (or ready_in_vector);
-	msgout_valid <= (or valid_out_vector);	
+	msgout_last    <= (or msgout_last_vector);
+	rsa_status     <= (others => '0');                           -- Maybe something interesting to do with this?
+	msgin_ready    <= (or ready_in_vector);
+	msgout_valid   <= (or valid_out_vector);	
 	
 	
 	-- Generate internal ready_in and valid_out signals
-	process(ready_in_vector, ready_in_internal)
+	process(ready_in_vector, ready_in_internal, valid_out_vector, valid_out_internal)
 	begin
 	   ready_in_internal(0) <= '0';
 	   valid_out_internal(0) <= '0';
@@ -141,8 +145,17 @@ begin
 	
 
 	-- Drive the correct output through the mux
-   mux : for i in 0 to Num_Cores-1 generate
-       msgout_data <= msgout_vector(i) when ready_out_vector(i) = '1' else (others => 'Z');
-   end generate mux;
+    mux : for i in 0 to Num_Cores-1 generate
+        msgout_data <= msgout_vector(i) when ready_out_vector(i) = '1' else (others => 'Z');
+    end generate mux;
+    
+    process(msg_last_vector, ready_out_vector, msgout_last_vector)
+    begin
+        for i in 0 to Num_Cores-1 loop
+            msgout_last_vector(i) <= msg_last_vector(i) and ready_out_vector(i);
+        end loop;
+        
+        msgout_last <= (or msgout_last_vector);
+	end process;
 	
 end rtl;

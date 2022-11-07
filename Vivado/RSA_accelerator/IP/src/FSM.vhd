@@ -59,7 +59,7 @@ begin
     end process;
 
     -- FSM state controll
-    process(valid_in, ready_out, state, blakely_done)
+    process(valid_in, ready_out, state, blakely_done, counter)
     begin
         case (state) is
         when WAITING =>
