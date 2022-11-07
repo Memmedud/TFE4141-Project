@@ -113,7 +113,7 @@ begin
     
     -- Other minor logic
 	msgout_last <= '0';--<= last_message and msgout_valid;     -- This is probably wrong
-	rsa_status   <= (others => '0');                   -- Maybe something interesting to do with this?
+	rsa_status   <= (others => '0');                           -- Maybe something interesting to do with this?
 	msgin_ready <= (or ready_in_vector);
 	msgout_valid <= (or valid_out_vector);	
 	
@@ -129,7 +129,7 @@ begin
 	   end loop;
 	end process;
 	
-	
+	 
 	-- Generate internal valid_in and ready_out signals
 	process(ready_in_vector, ready_in_internal, msgin_valid, msgout_valid, valid_out_internal, valid_out_vector, msgout_ready)
 	begin
@@ -139,41 +139,10 @@ begin
 	   end loop;
 	end process;
 	
-	
+
 	-- Drive the correct output through the mux
-	process(ready_out_vector, msgout_vector)
-	begin
-	   for i in 0 to Num_Cores-1 loop
-	       if (ready_out_vector(i) = '1') then
-	           msgout_data <= msgout_vector(i);
-	       else
-	           msgout_data <= (others => '0');
-	       end if;
-	   end loop;
-	end process;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		
-	-- This is maybe useless
-	process(clk, reset_n)
-	begin
-	   if (reset_n = '0') then
-	       last_message <= '0';
-	   else
-	       if (msgin_valid = '1' and msgin_ready = '1') then
-	           last_message <= msgin_last;
-	       else
-	           last_message <= last_message;
-	       end if;
-	   end if;
-	end process;
+   mux : for i in 0 to Num_Cores-1 generate
+       msgout_data <= msgout_vector(i) when ready_out_vector(i) = '1' else (others => 'Z');
+   end generate mux;
 	
 end rtl;
