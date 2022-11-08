@@ -8,3 +8,5 @@ Hva må gjøres:
     KAn optimalisere muxer og tetllere i blakely
 
     Undersøke syntetiserings-options, kanskje noe optimalisering der au
+
+    Se på waveforms, hvis det kun er nuller i resten av e kan man si seg ferdig ummidelbart 

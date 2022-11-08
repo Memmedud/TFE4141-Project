@@ -26,7 +26,7 @@ end blakely;
 
 architecture rtl of blakely is
 
-signal b_i               : STD_LOGIC;
+signal b_i              : STD_LOGIC;
 signal n_shifted        : STD_LOGIC_VECTOR(C_block_size downto 0);
 
 signal result_nxt       : STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
@@ -46,7 +46,10 @@ signal counter          : STD_LOGIC_VECTOR(integer(ceil(log2(real(C_block_size))
 signal blakely_done_nxt : STD_LOGIC;
 
 begin
+
+    ---------------------------------------
     -- Sequential datapath
+    ---------------------------------------
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
@@ -65,8 +68,11 @@ begin
             end if;
         end if;
     end process;
-
+    
+    
+    ---------------------------------------
     -- Combinatorial Blakely algorithm
+    ---------------------------------------
     process(a, b_i, n, n_shifted, result_r, result_nxt, result_bitshift, sum_a, mux_bi, sum_n, sum_2n, underflow1, underflow2, mux_bi_underflow)
     begin
         -- Calculate some intermediate values
@@ -98,8 +104,10 @@ begin
             result_nxt <= (others => '0');
         end if;
     end process;
-
+    
+    ------------------------------------------
     -- Output control signal
+    ------------------------------------------
     process(counter)
     begin
         if (counter = std_logic_vector(to_unsigned(0, integer(ceil(log2(real(C_block_size))))))) then
@@ -109,6 +117,7 @@ begin
         end if;
     end process;
     
+    -- Other minor logic
     result <= result_r;
     n_shifted <= STD_LOGIC_VECTOR(shift_left(resize(unsigned(n), C_block_size+1), 1));
     b_i <= b(to_integer(unsigned(counter)));

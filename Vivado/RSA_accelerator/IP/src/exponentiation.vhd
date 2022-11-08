@@ -17,6 +17,8 @@ entity exponentiation is
 		ready_in	: out std_logic;
 		ready_out	: in  std_logic;
 		valid_out	: out std_logic;
+		msgin_last  : in  std_logic;
+		msgout_last : out std_logic;
 
 		-- input data
 		message 	: in std_logic_VECTOR(C_block_size-1 downto 0);
@@ -36,6 +38,7 @@ signal P_r              : std_logic_vector(C_block_size-1 downto 0);
 signal C_r              : std_logic_vector(C_block_size-1 downto 0);
 signal P_nxt            : std_logic_vector(C_block_size-1 downto 0);
 signal C_nxt            : std_logic_vector(C_block_size-1 downto 0);
+signal msg_last_r       : std_logic;
 
 -- Blakely signals
 signal result_C     	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
@@ -112,14 +115,20 @@ begin
         if (reset_n = '0') then
             C_r <= (0 => '1', others => '0');
 			P_r <= (others => '0');
+			msg_last_r <= '0';
         elsif (rising_edge(clk)) then
             C_r <= C_nxt;
             P_r <= P_nxt;
+            if (valid_in = '1') then
+                msg_last_r <= msgin_last;
+            else 
+                msg_last_r <= msg_last_r;
+            end if;
         end if;
     end process;
     
     -- Combinatorial datapath
-    process(e_index, key, result_C, C_r, valid_in, message, ready_in)
+    process(e_index, key, result_C, C_r, valid_in, message, ready_in, blakely_done, result_P, P_r, e_i)
     begin
         if (ready_in = '1' and valid_in = '1') then
             C_nxt <= (0 => '1', others => '0');
@@ -140,6 +149,7 @@ begin
         end if;
     end process;
    
+    msgout_last <= msg_last_r;
     result <= C_r;
 	blakely_done <= blakely_done_C and blakely_done_P;
 	e_i <= (key(to_integer(unsigned(e_index))));

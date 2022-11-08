@@ -30,7 +30,7 @@ upgrade_ip -vlnv xilinx.com:user:rsa_accelerator:1.0 [get_ips  rsa_soc_rsa_acc_0
 update_compile_order -fileset sources_1
 #sythesizing
 reset_run synth_1
-launch_runs synth_1 -jobs 8
+launch_runs synth_1 -jobs 12
 wait_on_run synth_1
 
 set synth_status [get_property STATUS [get_runs synth_1]]
@@ -44,7 +44,7 @@ if {$synth_status != "synth_design Complete!"} {
 update_compile_order -fileset sources_1
 #implementing/writing bitstream
 reset_run impl_1
-launch_runs impl_1 -to_step write_bitstream -jobs 8
+launch_runs impl_1 -to_step write_bitstream -jobs 12
 wait_on_run impl_1
 
 set impl_status [get_property STATUS [get_runs impl_1]]
