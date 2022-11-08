@@ -30,17 +30,16 @@ signal state        : state_type;
 signal state_nxt    : state_type;
 
 -- Counters
-signal counter          : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-signal RSA_done         : std_logic;
+signal counter      : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
 
 begin
     -- Sequential datapath
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
-            state <= WAITING;
+            state   <= WAITING;
         elsif (rising_edge(clk)) then
-            state <= state_nxt;
+            state   <= state_nxt;
         end if;
     end process;
 
@@ -48,7 +47,7 @@ begin
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
-            counter         <= (others => '0');
+            counter <= (others => '0');
         elsif (rising_edge(clk)) then
             if (state = CALCULATING) then
                 counter <= counter + 1;
@@ -70,7 +69,7 @@ begin
             end if;
             
         when CALCULATING =>
-            if (counter = 255) then
+            if (and counter) then
                 state_nxt <= OUTPUTTING;
             else
                 state_nxt <= BLAKELY;
