@@ -69,7 +69,7 @@ begin
             end if;
             
         when CALCULATING =>
-            if (and counter) then
+            if (and counter = '1') then
                 state_nxt <= OUTPUTTING;
             else
                 state_nxt <= BLAKELY;
