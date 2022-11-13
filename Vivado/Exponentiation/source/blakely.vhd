@@ -14,19 +14,17 @@ entity blakely is
 
         -- Inputs
         a               :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
-        b               :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
+        b_i             :  in STD_LOGIC;
         n               :  in STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
         blakely_enable  :  in STD_LOGIC;
 
         -- Outputs
-        result          : out STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
-        blakely_done    : out STD_LOGIC
+        result          : out STD_LOGIC_VECTOR(C_block_size - 1 downto 0)
     );
 end blakely;
 
 architecture rtl of blakely is
 
-signal b_i              : STD_LOGIC;
 signal n_shifted        : STD_LOGIC_VECTOR(C_block_size downto 0);
 
 signal result_nxt       : STD_LOGIC_VECTOR(C_block_size - 1 downto 0);
@@ -42,8 +40,6 @@ signal underflow1       : STD_LOGIC;
 signal underflow2       : STD_LOGIC;
 signal mux_bi_underflow : STD_LOGIC;  
 
-signal counter          : STD_LOGIC_VECTOR(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-signal blakely_done_nxt : STD_LOGIC;
 
 begin
 
@@ -54,17 +50,11 @@ begin
     begin
         if (rst_n = '0') then
             result_r <= (others => '0');
-            counter <= (others => '1');
-            blakely_done <= '0';
         elsif (rising_edge(clk)) then
             if (blakely_enable = '1') then
                 result_r <= result_nxt;
-                counter <= std_logic_vector(unsigned(counter) - 1);
-                blakely_done <= blakely_done_nxt;
             else
                 result_r <= (others => '0');
-                counter <= (others => '1');
-                blakely_done <= '0';
             end if;
         end if;
     end process;
@@ -105,21 +95,8 @@ begin
         end if;
     end process;
     
-    ------------------------------------------
-    -- Output control signal
-    ------------------------------------------
-    process(counter)
-    begin
-        if (counter = std_logic_vector(to_unsigned(0, integer(ceil(log2(real(C_block_size))))))) then
-            blakely_done_nxt <= '1';
-        else
-            blakely_done_nxt <= '0';
-        end if;
-    end process;
-    
     -- Other minor logic
     result <= result_r;
     n_shifted <= STD_LOGIC_VECTOR(shift_left(resize(unsigned(n), C_block_size+1), 1));
-    b_i <= b(to_integer(unsigned(counter)));
     
 end rtl;

@@ -57,7 +57,7 @@ begin
         end if;
     end process;
 
-    -- FSM state controll
+    -- FSM state control
     process(valid_in, ready_out, state, blakely_done, counter)
     begin
         case (state) is

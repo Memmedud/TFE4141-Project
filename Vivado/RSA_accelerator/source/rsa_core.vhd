@@ -116,7 +116,6 @@ begin
     
     
     -- Other minor logic
-	msgout_last    <= (or msgout_last_vector);
 	rsa_status     <= (others => '0');                           -- Maybe something interesting to do with this?
 	msgin_ready    <= (or ready_in_vector);
 	msgout_valid   <= (or valid_out_vector);	
