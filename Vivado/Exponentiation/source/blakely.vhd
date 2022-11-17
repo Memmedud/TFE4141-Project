@@ -46,16 +46,12 @@ begin
     ---------------------------------------
     -- Sequential datapath
     ---------------------------------------
-    process(clk, rst_n)
+    process(clk)
     begin
-        if (rst_n = '0') then
-            result_r <= (others => '0');
-        elsif (rising_edge(clk)) then
-            if (blakely_enable = '1') then
-                result_r <= result_nxt;
-            else
-                result_r <= (others => '0');
-            end if;
+        if (rising_edge(clk)) then
+            result_r <= result_nxt and blakely_enable;
+        else
+            result_r <= result_r;
         end if;
     end process;
     
@@ -88,7 +84,7 @@ begin
            result_nxt <= mux_bi(C_block_size - 1 downto 0);
         elsif(underflow1 = '0' AND underflow2 = '1') then
             result_nxt <= sum_n(C_block_size - 1 downto 0);
-        elsif(underflow2 = '0' or (underflow1 = '1' AND underflow2 = '1' AND mux_bi_underflow = '1')) then
+        elsif(underflow2 = '0' or mux_bi_underflow = '1') then
             result_nxt <= sum_2n(C_block_size - 1 downto 0);
         else
             result_nxt <= (others => '0');

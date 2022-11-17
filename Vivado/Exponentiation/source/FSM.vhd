@@ -108,8 +108,7 @@ begin
         when BLAKELY =>
             ready_in        <= '0';
             valid_out       <= '0';
-            blakely_enable  <= '1';
-    
+            blakely_enable  <= '1'; 
 
         when OUTPUTTING =>
             ready_in        <= '0';
