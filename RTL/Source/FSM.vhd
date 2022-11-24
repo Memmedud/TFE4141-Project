@@ -30,17 +30,16 @@ signal state        : state_type;
 signal state_nxt    : state_type;
 
 -- Counters
-signal counter          : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
-signal RSA_done         : std_logic;
+signal counter      : unsigned(integer(ceil(log2(real(C_block_size))))-1 downto 0);
 
 begin
     -- Sequential datapath
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
-            state <= WAITING;
+            state   <= WAITING;
         elsif (rising_edge(clk)) then
-            state <= state_nxt;
+            state   <= state_nxt;
         end if;
     end process;
 
@@ -48,7 +47,7 @@ begin
     process(clk, rst_n)
     begin
         if (rst_n = '0') then
-            counter         <= (others => '0');
+            counter <= (others => '0');
         elsif (rising_edge(clk)) then
             if (state = CALCULATING) then
                 counter <= counter + 1;
@@ -58,8 +57,8 @@ begin
         end if;
     end process;
 
-    -- FSM state controll
-    process(valid_in, ready_out, state, blakely_done)
+    -- FSM state control
+    process(valid_in, ready_out, state, blakely_done, counter)
     begin
         case (state) is
         when WAITING =>
@@ -70,7 +69,7 @@ begin
             end if;
             
         when CALCULATING =>
-            if (counter = 255) then
+            if (and counter = '1') then
                 state_nxt <= OUTPUTTING;
             else
                 state_nxt <= BLAKELY;
@@ -109,8 +108,7 @@ begin
         when BLAKELY =>
             ready_in        <= '0';
             valid_out       <= '0';
-            blakely_enable  <= '1';
-    
+            blakely_enable  <= '1'; 
 
         when OUTPUTTING =>
             ready_in        <= '0';

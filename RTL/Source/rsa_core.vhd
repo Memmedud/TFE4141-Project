@@ -21,7 +21,9 @@ use ieee.numeric_std.all;
 entity rsa_core is
 	generic (
 		-- Users to add parameters here
-		C_BLOCK_SIZE          : integer := 256
+		C_BLOCK_SIZE          : integer := 256;
+		-- Number of Exponentiation cores to instanciate
+		Num_Cores             : integer := 9
 	);
 	port (
 		-----------------------------------------------------------------------------
@@ -65,41 +67,94 @@ entity rsa_core is
 end rsa_core;
 
 architecture rtl of rsa_core is
+    
+    -- Creates a matrix used for msgout-mux
+    type t_matrix is array (0 to Num_Cores-1) of std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+    signal msgout_vector            : t_matrix;
 
-    signal last_message : std_logic; 
-
+    signal last_message             : std_logic;
+    
+    -- Vector signals connecting to each core
+    signal valid_in_vector          : std_logic_vector(Num_Cores-1 downto 0);
+    signal valid_out_vector         : std_logic_vector(Num_Cores-1 downto 0);
+    signal ready_in_vector          : std_logic_vector(Num_Cores-1 downto 0);
+    signal ready_out_vector         : std_logic_vector(Num_Cores-1 downto 0);
+    signal msg_last_vector          : std_logic_vector(Num_Cores-1 downto 0);
+    signal msgout_last_vector       : std_logic_vector(Num_Cores-1 downto 0);
+    
+    -- Internal helper signals
+    signal ready_in_internal        : std_logic_vector(Num_Cores-1 downto 0);
+    signal valid_out_internal       : std_logic_vector(Num_Cores-1 downto 0);  
+    
 begin
-	i_exponentiation : entity work.exponentiation
+    
+    -- Generates Num_Cores number of RSA cores
+    Cores : for i in 0 to Num_Cores-1 generate
+    begin
+        i_exponentiation : entity work.exponentiation
 		generic map (
 			C_block_size => C_BLOCK_SIZE
 		)
 		port map (
-			message   => msgin_data  ,
-			key       => key_e_d     ,
-			valid_in  => msgin_valid ,
-			ready_in  => msgin_ready ,
-			ready_out => msgout_ready,
-			valid_out => msgout_valid,
-			result    => msgout_data ,
-			n         => key_n       ,
-			clk       => clk         ,
-			reset_n   => reset_n
-		);
-
-	msgout_last  <= last_message and msgout_valid;
-	rsa_status   <= (others => '0');
+		    -- Signals equal for all instanciations			
+			clk          => clk         ,
+			reset_n      => reset_n     ,
+			n            => key_n       ,
+			key          => key_e_d     ,
+			message      => msgin_data  ,
+			msgin_last   => msgin_last  ,
+			
+			-- Individual signals
+			valid_in     => valid_in_vector(i)   ,
+			ready_in     => ready_in_vector(i)   ,
+			ready_out    => ready_out_vector(i)  ,
+			valid_out    => valid_out_vector(i)  ,
+			msgout_last  => msg_last_vector(i),
+			result       => msgout_vector(i) 
+		);	   
+    end generate Cores;
+    
+    
+    -- Other minor logic
+	rsa_status     <= (others => '0');                           -- Maybe something interesting to do with this?
+	msgin_ready    <= (or ready_in_vector);
+	msgout_valid   <= (or valid_out_vector);	
 	
-	process(clk, reset_n)
+	
+	-- Generate internal ready_in and valid_out signals
+	process(ready_in_vector, ready_in_internal, valid_out_vector, valid_out_internal)
 	begin
-	   if (reset_n = '0') then
-	       last_message <= '0';
-	   else
-	       if (msgin_valid = '1' and msgin_ready = '1') then
-	           last_message <= msgin_last;
-	       else
-	           last_message <= last_message;
-	       end if;
-	   end if;
+	   ready_in_internal(0) <= '0';
+	   valid_out_internal(0) <= '0';
+	   for i in 0 to Num_Cores-2 loop
+	       ready_in_internal(i+1) <= ready_in_vector(i) or ready_in_internal(i);
+	       valid_out_internal(i+1) <= valid_out_vector(i) or valid_out_internal(i);
+	   end loop;
+	end process;
+	
+	 
+	-- Generate internal valid_in and ready_out signals
+	process(ready_in_vector, ready_in_internal, msgin_valid, msgout_valid, valid_out_internal, valid_out_vector, msgout_ready)
+	begin
+	   for i in 0 to Num_Cores-1 loop
+	       valid_in_vector(i) <= (not ready_in_internal(i)) and ready_in_vector(i) and msgin_valid;
+	       ready_out_vector(i) <= (not valid_out_internal(i)) and valid_out_vector(i) and msgout_ready;
+	   end loop;
+	end process;
+	
+
+	-- Drive the correct output through the mux
+    mux : for i in 0 to Num_Cores-1 generate
+        msgout_data <= msgout_vector(i) when ready_out_vector(i) = '1' else (others => 'Z');
+    end generate mux;
+    
+    process(msg_last_vector, ready_out_vector, msgout_last_vector)
+    begin
+        for i in 0 to Num_Cores-1 loop
+            msgout_last_vector(i) <= msg_last_vector(i) and ready_out_vector(i);
+        end loop;
+        
+        msgout_last <= (or msgout_last_vector);
 	end process;
 	
 end rtl;
