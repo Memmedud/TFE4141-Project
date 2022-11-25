@@ -23,7 +23,7 @@ entity rsa_core is
 		-- Users to add parameters here
 		C_BLOCK_SIZE          : integer := 256;
 		-- Number of Exponentiation cores to instanciate
-		Num_Cores             : integer := 10
+		Num_Cores             : integer := 9
 	);
 	port (
 		-----------------------------------------------------------------------------
@@ -109,14 +109,14 @@ begin
 			ready_in     => ready_in_vector(i)   ,
 			ready_out    => ready_out_vector(i)  ,
 			valid_out    => valid_out_vector(i)  ,
-			msgout_last  => msg_last_vector(i),
+			msgout_last  => msg_last_vector(i)	 ,
 			result       => msgout_vector(i) 
 		);	   
     end generate Cores;
     
     
     -- Other minor logic
-	rsa_status     <= (others => '0');                           -- Maybe something interesting to do with this?
+	rsa_status     <= (others => '0');                          
 	msgin_ready    <= (or ready_in_vector);
 	msgout_valid   <= (or valid_out_vector);	
 	

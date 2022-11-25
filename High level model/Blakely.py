@@ -1,17 +1,10 @@
-### calculates R=A*B mod n
-### 0 <= a, b, R <= n-
-from ast import Mod
-
 
 def check_bit_num(int_input, index):
     return int( int_input & (1 << index) != 0)
 
-
-def check_bit(input, bitNum):
-    return input & (1<<(bitNum))
-    
+### calculates R=A*B mod n
 temp = True
-def ModMul(A, B, n, temp):
+def ModMul(A, B, n):
     R = 0
     # Convert B to a binary list
     B = [1 if digit=='1' else 0 for digit in bin(B)[2:]]
@@ -19,29 +12,23 @@ def ModMul(A, B, n, temp):
         R = (R << 1)
         if (bi): # bi is either 1 or 0
             R += A
+        if R >= 2*n:
+            R -= 2*n
         if R >= n:
             R -= n
-        if R >= n:
-            R -= n
-    if temp:
-        print("Done with ModMul")
     return R
 
 def RSA(M, e, n):
-    temp = False
     C = 1
     P = M
     for i in range(0, e.bit_length()):
         if (check_bit_num(e,i) == 1):
-            print("e[i] = 1")
-            C = ModMul(P, C, n, temp)
-        temp = False
-        P = ModMul(P, P, n, temp)
-        temp = False
-        print("C: ", hex(C))
-        print("P: ", hex(P))
-    print("Result: ")
+            C = ModMul(P, C, n)
+        P = ModMul(P, P, n)
     return C
+
+################# -- Below follows some testcases we have used -- #######################
+################# -- Not part of the algorithm itself ----------- #######################
 
 #a = 0x0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 #b = 0x0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
